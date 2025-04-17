@@ -22,13 +22,18 @@ import {
   Divider,
   IconButton,
   Paper,
-  Link,
+  Stepper,
+  Step,
+  StepLabel,
 } from "@mui/material";
 import axios from "axios";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import AddMemberModal from "./AddMemberModal";
 import { Snackbar, Alert } from '@mui/material';
+import Link from "next/link";
+import { useRouter } from 'next/router';
+
 
 const theme = createTheme({
   palette: {
@@ -37,54 +42,12 @@ const theme = createTheme({
     },
   },
 });
+type EventDetailsProps = {
+  onSubmitSuccess?: () => void;
+};
 
-
-// const events = [
-//   {
-//     title: "React Conf 2025",
-//     date: "2025-03-15",
-//     location: "San Francisco",
-//     image: "https://s3.amazonaws.com/angularminds.com/blog/media/React%20Summit-20240906120708414.png",
-//     eventid:"1",
-//   },
-//   {
-//     title: "AI & ML Summit",
-//     date: "2025-04-30",
-//     location: "New York",
-//     image: "https://res.cloudinary.com/startup-grind/image/upload/c_fill,dpr_2,f_auto,g_center,q_auto:good/v1/gcs/platform-data-goog/events/Summit%20Poster%20Image.png",
-//     eventid:"2",
-//   },
-//   {
-//     title: "Music Fest 2025",
-//     date: "2025-03-15",
-//     location: "Los Angeles",
-//     image: "https://theindianmusicdiaries.com/wp-content/smush-webp/2024/12/Supersonic.jpg.webp",
-//     eventid:"3",
-//   },
-//   {
-//     title: "Blockchain Expo",
-//     date: "2025-03-15",
-//     location: "London",
-//     image: "https://blockchain-expo.com/europe/wp-content/uploads/2023/10/MicrosoftTeams-image-41.png",
-//     eventid:"4",
-//   },
-//   {
-//     title: "Startup Pitch Day",
-//     date: "2025-03-15",
-//     location: "Bangalore",
-//     image: "https://startupnv.org/wp-content/uploads/2023/08/pitchday.png",
-//     eventid:"5",
-//   },
-//   {
-//     title: "Cyber Security Conference",
-//     date: "2025-03-15",
-//     location: "Dubai",
-//     image: "https://events.holyrood.com/wp-content/uploads/2021/10/CyberSecurityScotland_900x517_Header.jpg",
-//     eventid:"6",
-//   },
-// ];
-
-export default function EventDetails() {
+export default function EventDetails({ onSubmitSuccess }: EventDetailsProps) {
+  const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState({
     userType: "",
     eventName: "",
@@ -190,14 +153,40 @@ const handleSubmitAllMembers = async () => {
     console.log("All members submitted successfully:", response.data);
     setOpenSnackbar(true); // show success
     setSubmissionSuccess(true);
+    onSubmitSuccess();
   } catch (error) {
     console.error("Error submitting members:", error);
   }
 };
-
   return (
     <ThemeProvider theme={theme}>
       {/* Form Section */}
+      <Stepper activeStep={activeStep} alternativeLabel>
+          {["Event Details", "Upload Document", "Review & Submit"].map((label, index) => (
+            <Step key={label}>
+              <StepLabel
+                sx={{
+                  "& .MuiStepLabel-label": {
+                    color: "#9e9e9e", // default color
+                    mb:2,
+                  },
+                  "& .MuiStepLabel-label.Mui-active": {
+                    color: "#3b0083",
+                    fontWeight: "bold",
+                    mb:2,
+                  },
+                  "& .MuiStepLabel-label.Mui-completed": {
+                    color: "#3b0083",
+                    mb:2,
+                  },
+                }}
+              >
+                {label}
+              </StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+
       <Box sx={{ px: 2, pb: 4, display: "flex", justifyContent: "center", bgcolor: "#f7f4fc" }}>
         <Card
           sx={{
@@ -567,7 +556,6 @@ const handleSubmitAllMembers = async () => {
               color="primary"
               size="large"
               sx={{ borderRadius: 2 }}
-              component={Link} href="/uploadimage"
             >
               Next
             </Button>
