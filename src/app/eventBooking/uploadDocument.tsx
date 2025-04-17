@@ -8,7 +8,8 @@ const UploadDocument: React.FC = () => {
   const [orgRequestLetter, setOrgRequestLetter] = useState<File | null>(null); // To hold Organization Request Letter
   const [errors, setErrors] = useState<{ idProof?: string; orgRequestLetter?: string }>({}); // Error state for validation
 
-  // Fetch user type from localStorage when the component mounts
+  // Fetch user type from localStorage when the component mounts for the first time.
+  
   useEffect(() => {
     const userTypeFromStorage = localStorage.getItem("userType");
     if (userTypeFromStorage) {
