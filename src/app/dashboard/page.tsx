@@ -1,98 +1,3 @@
-// "use client";
-// import { useState } from "react";
-// import { useRouter } from "next/navigation";
-// import {
-//   AppBar,
-//   Toolbar,
-//   Typography,
-//   IconButton,
-//   Menu,
-//   MenuItem,
-//   Avatar,
-//   Container,
-//   Box,
-//   Stepper,
-//   Step,
-//   StepLabel,
-// } from "@mui/material";
-// import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-// import EventDetails from "../eventBooking/eventDetails";
-
-// export default function DashboardPage() {
-//   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-//   const [activeStep, setActiveStep] = useState(0);
-//   const router = useRouter();
-
-//   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-//     setAnchorEl(event.currentTarget);
-//   };
-
-//   const handleMenuClose = () => {
-//     setAnchorEl(null);
-//   };
-
-//   const handleLogout = () => {
-//     localStorage.removeItem("token");
-//     sessionStorage.removeItem("token");
-//     router.push("/");
-//   };
-
-//   return (
-//     <Box sx={{ bgcolor: "#f4f4f9", minHeight: "100vh" }}>
-//       <AppBar position="static" sx={{ bgcolor: "#3b0083", boxShadow: 5 }}>
-//         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-//           <Typography variant="h6" sx={{ fontWeight: "bold", color: "#fff" }}>
-//             Event Dashboard
-//           </Typography>
-//           <IconButton onClick={handleMenuOpen} color="inherit">
-//             <Avatar sx={{ bgcolor: "#fff" }}>
-//               <AccountCircleIcon color="primary" />
-//             </Avatar>
-//           </IconButton>
-//           <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
-//             <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-//             <MenuItem onClick={handleLogout}>Logout</MenuItem>
-//           </Menu>
-//         </Toolbar>
-//       </AppBar>
-
-//       <Container sx={{ textAlign: "center", mt: 4, maxWidth: "800px" }}>
-//         <Typography variant="h4" fontWeight="bold" sx={{ mb: 3, color: "#3b0083" }}>
-//           Event Booking Form
-//         </Typography>
-
-//         {/* ✅ Stepper with Custom Color */}
-//         <Stepper activeStep={activeStep} alternativeLabel>
-//           {["Event Details", "Upload Image", "Review & Submit"].map((label, index) => (
-//             <Step key={label}>
-//               <StepLabel
-//                 sx={{
-//                   "& .MuiStepLabel-label": {
-//                     color: "#9e9e9e", // default color
-//                     mb:2,
-//                   },
-//                   "& .MuiStepLabel-label.Mui-active": {
-//                     color: "#3b0083",
-//                     fontWeight: "bold",
-//                     mb:2,
-//                   },
-//                   "& .MuiStepLabel-label.Mui-completed": {
-//                     color: "#3b0083",
-//                     mb:2,
-//                   },
-//                 }}
-//               >
-//                 {label}
-//               </StepLabel>
-//             </Step>
-//           ))}
-//         </Stepper>
-
-//         <EventDetails />
-//       </Container>
-//     </Box>
-//   );
-// }
 "use client";
 import { useState,useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -103,22 +8,21 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import EventIcon from "@mui/icons-material/Event";
-import UploadIcon from "@mui/icons-material/People";
-import MessageIcon from "@mui/icons-material/Message";
-import LinkIcon from "@mui/icons-material/Link";
-import SettingsIcon from "@mui/icons-material/Settings";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
+import PreviewIcon from "@mui/icons-material/Preview";
+import BookOnlineIcon from "@mui/icons-material/BookOnline";
 import LogoutIcon from "@mui/icons-material/Logout";
 import EventDetails from "../eventBooking/eventDetails";
 import UploadDocument from "../eventBooking/uploadDocument";
+import PreviewAndSubmit from "../eventBooking/previewSubmit";
 
 const drawerWidth = 220;
 
 const menuItems = [
   { text: "Event Details", icon: <EventIcon /> },
-  { text: "Upload Document", icon: <UploadIcon /> },
-  { text: "Messages", icon: <MessageIcon /> },
-  { text: "RSVP Link", icon: <LinkIcon /> },
-  { text: "Settings", icon: <SettingsIcon /> },
+  { text: "Upload Document", icon: <UploadFileIcon /> },
+  { text: "Preview & Submit", icon: <PreviewIcon /> },
+  { text: "Get Ticket", icon: <BookOnlineIcon /> },
 ];
 
 export default function EventDashboard() {
@@ -129,6 +33,7 @@ export default function EventDashboard() {
   const theme = useTheme();
   const [email, setEmail] = useState("");
   const [eventSubmitted, setEventSubmitted] = useState(false);
+  const [documentUploaded, setDocumentUploaded] = useState(false);
 
   useEffect(() => {
     // Only runs on client
@@ -164,11 +69,25 @@ export default function EventDashboard() {
             }}
           />
         );
-      case "Upload Document":
-        return <UploadDocument />;
-      case "Messages":
-      case "RSVP Link":
-      case "Settings":
+        case "Upload Document":
+          return (
+            <UploadDocument
+              onUploadSuccess={() => {
+                setDocumentUploaded(true);
+                setSelectedTab("Preview & Submit");
+              }}
+            />
+          );
+      case "Preview & Submit":
+        return (
+          <PreviewAndSubmit
+            onUreviewSubmit={() => {
+              setDocumentUploaded(true);
+              setSelectedTab("Preview & Submit");
+            }}
+          />
+        );
+      case "Get Ticket":
         return <Typography>No access until submission</Typography>;
       default:
         return <Typography>No content found.</Typography>;
@@ -264,44 +183,13 @@ export default function EventDashboard() {
         open={openSidebar}
       >
         <Toolbar />
-        {/* <List>
-          {menuItems.map(({ text, icon }) => (
-            <Tooltip title={openSidebar ? "" : text} placement="right" key={text}>
-              <ListItem disablePadding>
-                <ListItemButton
-                  selected={selectedTab === text}
-                  onClick={() => setSelectedTab(text)}
-                  sx={{
-                    justifyContent: openSidebar ? "initial" : "center",
-                    px: 2.5,
-                  }}
-                >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: openSidebar ? 2 : "auto",
-                      justifyContent: "center",
-                      color: "#3b0083",
-                    }}
-                  >
-                    {icon}
-                  </ListItemIcon>
-                  {openSidebar && (
-                    <Typography fontSize={14} color="#3b0083">
-                      {text}
-                    </Typography>
-                  )}
-                </ListItemButton>
-              </ListItem>
-            </Tooltip>
-          ))}
-        </List> */}
         <List>
   {menuItems.map(({ text, icon }) => {
     const isDisabled =
-      (!eventSubmitted && text !== "Event Details") || // Before submission: only Event Details enabled
-      (eventSubmitted && text !== "Upload Document");  // After submission: only Upload Document enabled
-
+    (!eventSubmitted && text !== "Event Details" && !eventSubmitted && text !== "Get Ticket") || // Step 1: Before submission, only Event Details is enabled
+    (eventSubmitted && !documentUploaded && text === "Review & Submit") || // Step 2: After event submitted, disable Review until document is uploaded
+    (eventSubmitted && !documentUploaded && text !== "Event Details" && text !== "Upload Document"); // Step 3: Block all tabs except Event Details and Upload Doc
+  
     return (
       <Tooltip title={openSidebar ? "" : text} placement="right" key={text}>
         <ListItem disablePadding>
@@ -314,6 +202,7 @@ export default function EventDashboard() {
               px: 2.5,
               opacity: isDisabled ? 0.5 : 1,
               cursor: isDisabled ? "not-allowed" : "pointer",
+              background:"primary"
             }}
           >
             <ListItemIcon
