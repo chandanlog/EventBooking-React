@@ -151,9 +151,13 @@ const handleSubmitAllMembers = async () => {
       userEmail: formData.userEmail,
     });
     console.log("All members submitted successfully:", response.data);
+    localStorage.setItem("userType",formData.userType);
+    localStorage.setItem("eventId",formData.eventId);
     setOpenSnackbar(true); // show success
     setSubmissionSuccess(true);
-    onSubmitSuccess();
+    setTimeout(() => {
+      onSubmitSuccess();
+    }, 2000);
   } catch (error) {
     console.error("Error submitting members:", error);
   }
