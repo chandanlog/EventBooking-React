@@ -347,13 +347,11 @@
     "yaml": "^2.7.0",
     "yocto-queue": "^0.1.0"
   },
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "export": "next build && next export",
-    "start": "next start",
-    "deploy": "gh-pages -d out"
-  },
+"scripts": {
+  "dev": "next dev",
+  "build": "next build",
+  "start": "next start"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
