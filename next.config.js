@@ -1,6 +1,5 @@
-/** @type {import('next').NextConfig} */
 const nextConfig = {
-  basePath: "/EVENT-BOOKING-SYSTEM", // Keep this if you're using it as subpath
+  basePath: "/EVENT-BOOKING-SYSTEM",
   assetPrefix: "/EVENT-BOOKING-SYSTEM/",
   images: {
     unoptimized: true,
@@ -9,5 +8,3 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
 };
-
-module.exports = nextConfig;
