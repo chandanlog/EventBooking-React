@@ -5,34 +5,31 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AppBar, Toolbar, Typography, Box, Button } from "@mui/material";
 
+// Set your basePath from env or fallback to empty
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    // Function to check login status
-    const checkAuth = () => {
-      const token = localStorage.getItem("token");
-      setIsLoggedIn(!!token);
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+
+    const handleStorageChange = () => {
+      const updatedToken = localStorage.getItem("token");
+      setIsLoggedIn(!!updatedToken);
     };
-
-    checkAuth(); // Check auth on mount
-
-    // Listen for changes in localStorage (for multiple tabs)
-    const handleStorageChange = () => checkAuth();
 
     window.addEventListener("storage", handleStorageChange);
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
   const handleLogout = () => {
-    // Clear all stored data
     localStorage.clear();
     sessionStorage.clear();
-
-    // Update UI and redirect to home page
     setIsLoggedIn(false);
-    router.push("/"); // Redirect to home page
+    router.push(`${basePath}/`);
   };
 
   return (
@@ -42,7 +39,7 @@ const Header = () => {
         <Typography
           variant="h6"
           component={Link}
-          href="/"
+          href={`${basePath}/`}
           sx={{
             textDecoration: "none",
             color: "#36d576",
@@ -54,14 +51,14 @@ const Header = () => {
           EventHub
         </Typography>
 
-        {/* Navigation Links */}
+        {/* Navigation */}
         <Box>
-          <Button component={Link} href="/" sx={navStyle}>
+          <Button component={Link} href={`${basePath}/`} sx={navStyle}>
             Home
           </Button>
           {isLoggedIn ? (
             <>
-              <Button component={Link} href="/dashboard" sx={navStyle}>
+              <Button component={Link} href={`${basePath}/dashboard`} sx={navStyle}>
                 Dashboard
               </Button>
               <Button onClick={handleLogout} sx={navStyle}>
@@ -69,7 +66,7 @@ const Header = () => {
               </Button>
             </>
           ) : (
-            <Button component={Link} href="/login" sx={navStyle}>
+            <Button component={Link} href={`${basePath}/login`} sx={navStyle}>
               Login
             </Button>
           )}
@@ -79,7 +76,7 @@ const Header = () => {
   );
 };
 
-// Navigation Button Style
+// Styling
 const navStyle = {
   color: "#fff",
   fontSize: "1rem",
