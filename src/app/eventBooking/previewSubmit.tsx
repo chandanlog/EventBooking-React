@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState } from "react";
 import {
   Box,
@@ -17,8 +16,10 @@ import {
   StepLabel,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-
-const PreviewAndSubmit: React.FC = () => {
+type PreviewAndSubmitProps = {
+  onUreviewSubmit: () => void;
+};
+const PreviewAndSubmit: React.FC<PreviewAndSubmitProps> = ({ onUreviewSubmit }) => {
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
