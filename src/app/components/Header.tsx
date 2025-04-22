@@ -52,7 +52,7 @@ const Header = () => {
         </Typography>
 
         {/* Navigation */}
-        <Box>
+{/*         <Box>
           <Button component={Link} href={`${basePath}/`} sx={navStyle}>
             Home
           </Button>
@@ -70,7 +70,7 @@ const Header = () => {
               Login
             </Button>
           )}
-        </Box>
+        </Box> */}
       </Toolbar>
     </AppBar>
   );
