@@ -1,13 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "export", // Ensures static export
-  basePath: "/EVENT-BOOKING-SYSTEM", // GitHub repository name
-  assetPrefix: "/EVENT-BOOKING-SYSTEM/", // Ensures assets load correctly
+  basePath: "/EVENT-BOOKING-SYSTEM", // Keep this if you're using it as subpath
+  assetPrefix: "/EVENT-BOOKING-SYSTEM/",
   images: {
-    unoptimized: true, // Fixes image issues in static export
+    unoptimized: true,
   },
   eslint: {
-    ignoreDuringBuilds: true, // Ignores ESLint errors during build
+    ignoreDuringBuilds: true,
   },
 };
 
