@@ -1,9 +1,8 @@
 {
-    "rewrites": [
-      {
-        "source": "/EVENT-BOOKING-SYSTEM",
-        "destination": "/index.html"
-      }
-    ]
-  }
-  
+  "rewrites": [
+    {
+      "source": "/EVENT-BOOKING-SYSTEM",
+      "destination": "/EVENT-BOOKING-SYSTEM/index.html"
+    }
+  ]
+}
