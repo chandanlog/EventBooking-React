@@ -15,6 +15,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import EventDetails from "../eventBooking/eventDetails";
 import UploadDocument from "../eventBooking/uploadDocument";
 import PreviewAndSubmit from "../eventBooking/previewSubmit";
+import TicketDownload from "../eventBooking/TicketDownload";
 
 const drawerWidth = 220;
 
@@ -83,12 +84,14 @@ export default function EventDashboard() {
           <PreviewAndSubmit
             onUreviewSubmit={() => {
               setDocumentUploaded(true);
-              setSelectedTab("Preview & Submit");
+              setSelectedTab("Get Ticket");
             }}
           />
         );
       case "Get Ticket":
-        return <Typography>No access until submission</Typography>;
+        return (
+          <TicketDownload />
+        );
       default:
         return <Typography>No content found.</Typography>;
     }

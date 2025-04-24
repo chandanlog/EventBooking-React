@@ -177,6 +177,20 @@ export default function RegisterPage() {
               Login here
             </Link>
           </Typography>
+
+          <Typography color="white" textAlign="center">
+            Want to leave?{" "}
+            <Link
+              href="/"
+              style={{
+                color: "#f44336", // red color for exit
+                fontWeight: "bold",
+                textDecoration: "none",
+              }}
+            >
+              Exit
+            </Link>
+          </Typography>
         </Container>
       </Box>
     </>
