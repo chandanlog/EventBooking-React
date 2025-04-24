@@ -461,7 +461,6 @@ const handleSubmitAllMembers = async () => {
         </Alert>
       </Snackbar>
 </Grid>
-
               </Grid>
               <AddMemberModal
   open={openModal}
