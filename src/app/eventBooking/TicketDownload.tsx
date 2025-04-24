@@ -31,11 +31,13 @@ interface EventData {
   eventLoaction: string;
   ticketNo: string;
   members: Member[];
+  message: string;
 }
 
 const TicketDownload: React.FC = () => {
   const [eventList, setEventList] = useState<EventData[]>([]);
   const [qrCodeMap, setQrCodeMap] = useState<Record<number, string>>({});
+  const [backendMessage, setBackendMessage] = useState<string | null>(null);
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -58,13 +60,14 @@ const TicketDownload: React.FC = () => {
         rawData.forEach((item: any) => {
           if (!grouped[item.eventId]) {
             grouped[item.eventId] = {
-              eventId: item.eventId,
+              eventId: item.eventId || "0",
               eventName: item.eventName,
-              eventDate: item.eventDate || "2025-05-01",
+              eventDate: item.eventDate,
               time: item.time || "18:00",
               eventLoaction: item.eventLoaction || "Main Venue",
               ticketNo: item.ticketNo,
               members: [],
+              message: item.message,
             };
           }
 
@@ -205,7 +208,7 @@ Mobile     : ${m.mobile}`
   
   return (
     <Box sx={{ background: "#f4f4f4", minHeight: "100vh", py: 4, px: 2 }}>
-      {eventList.length === 0 && (
+     {eventList.length === 0 && (
       <Box
         sx={{
           maxWidth: 600,
@@ -222,118 +225,150 @@ Mobile     : ${m.mobile}`
           ⏳ Booking Under Review
         </Typography>
         <Typography variant="body1" color="#e65100">
-          Your booking is under review. If you're an organization, please wait for admin approval.
+          No Booked any events.
         </Typography>
       </Box>
-      )}
+      )} 
       <Grid container spacing={4} justifyContent="center">
-        {eventList.map((event) => (
-          <Grid item xs={12} md={10} key={event.eventId}>
+  {eventList.map((event) => (
+    <Grid item xs={12} md={10} key={event.eventId}>
+      <Box
+        sx={{
+          borderRadius: "20px",
+          background: "linear-gradient(135deg, #ede7f6 0%, #fff 100%)",
+          boxShadow: 6,
+          border: "2px dashed #7b1fa2",
+          display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+          overflow: "hidden",
+          position: "relative",
+        }}
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: 0,
+            right: "-30px",
+            bottom: 0,
+            width: "60px",
+            background: "linear-gradient(135deg, #ff4081, #f50057)",
+            clipPath: "polygon(100% 0%, 0% 0%, 100% 100%, 0% 100%)",
+          }}
+        />
+
+        {event.message ? (
+          <Box
+            sx={{
+              maxWidth: 500,
+              margin: "auto",
+              p: 4,
+              mt: 5,
+              mb: 5,
+              textAlign: "center",
+              border: "1px dashed #ff9800",
+              borderRadius: 3,
+              backgroundColor: "#fff8e1",
+              width: "100%",
+            }}
+          >
+            <Typography variant="h6" color="#e65100" gutterBottom>
+              ⏳ Booking Under Review
+            </Typography>
+            <Typography variant="body1" color="#e65100">
+              {event.message}
+            </Typography>
+          </Box>
+        ) : (
+          <>
+            <Box sx={{ flex: 3, p: 4 }}>
+              <Typography variant="h5" fontWeight={700} color="#4a148c">
+                {event.eventName}
+              </Typography>
+              <Typography variant="body1" mt={1}>
+                📅 {event.eventDate} | 🕒 {event.time}
+              </Typography>
+              <Typography variant="body1">📍 {event.eventLoaction}</Typography>
+              <Typography variant="body2" mt={2}>
+                🎟 Ticket No: {event.ticketNo}
+              </Typography>
+              <Divider sx={{ my: 2 }} />
+              <Typography fontWeight={600} mb={1} color="#4a148c">
+                Members:
+              </Typography>
+              <Box sx={{ overflowX: "auto" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                  <thead>
+                    <tr style={{ backgroundColor: "#ce93d8", color: "white" }}>
+                      <th style={{ padding: "5px", textAlign: "left" }}>Name</th>
+                      <th style={{ padding: "5px", textAlign: "left" }}>Gender</th>
+                      <th style={{ padding: "5px", textAlign: "left" }}>Age</th>
+                      <th style={{ padding: "5px", textAlign: "left" }}>Id Type</th>
+                      <th style={{ padding: "5px", textAlign: "left" }}>Id No</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {event.members.map((member, index) => (
+                      <tr
+                        key={member.idNumber}
+                        style={{
+                          backgroundColor: index % 2 === 0 ? "#f3e5f5" : "#ffffff",
+                        }}
+                      >
+                        <td style={{ padding: "5px" }}>{member.name}</td>
+                        <td style={{ padding: "5px" }}>{member.gender}</td>
+                        <td style={{ padding: "5px" }}>{calculateAge(member.dob)}</td>
+                        <td style={{ padding: "5px" }}>{member.idType}</td>
+                        <td style={{ padding: "5px" }}>{member.idNumber}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </Box>
+            </Box>
             <Box
               sx={{
-                borderRadius: "20px",
-                background: "linear-gradient(135deg, #ede7f6 0%, #fff 100%)",
-                boxShadow: 6,
-                border: "2px dashed #7b1fa2",
+                flex: 1,
+                p: 2,
+                backgroundColor: "#4a148c",
                 display: "flex",
-                flexDirection: { xs: "column", md: "row" },
-                overflow: "hidden",
-                position: "relative",
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
-              <Box
-                sx={{
-                  position: "absolute",
-                  top: 0,
-                  right: "-30px",
-                  bottom: 0,
-                  width: "60px",
-                  background: "linear-gradient(135deg, #ff4081, #f50057)",
-                  clipPath: "polygon(100% 0%, 0% 0%, 100% 100%, 0% 100%)",
-                }}
-              />
-              <Box sx={{ flex: 3, p: 4 }}>
-                <Typography variant="h5" fontWeight={700} color="#4a148c">
-                  {event.eventName}
-                </Typography>
-                <Typography variant="body1" mt={1}>
-                  📅 {event.eventDate} | 🕒 {event.time}
-                </Typography>
-                <Typography variant="body1">📍 {event.eventLoaction}</Typography>
-                <Typography variant="body2" mt={2}>
-                  🎟 Ticket No: {event.ticketNo}
-                </Typography>
-                <Divider sx={{ my: 2 }} />
-                <Typography fontWeight={600} mb={1} color="#4a148c">
-                  Members:
-                </Typography>
-                <Box sx={{ overflowX: "auto" }}>
-                  <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                    <thead>
-                      <tr style={{ backgroundColor: "#ce93d8", color: "white" }}>
-                        <th style={{ padding: "5px", textAlign: "left" }}>Name</th>
-                        <th style={{ padding: "5px", textAlign: "left" }}>Gender</th>
-                        <th style={{ padding: "5px", textAlign: "left" }}>Age</th>
-                        <th style={{ padding: "5px", textAlign: "left" }}>Id Type</th>
-                        <th style={{ padding: "5px", textAlign: "left" }}>Id No</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {event.members.map((member, index) => (
-                        <tr
-                          key={index}
-                          style={{
-                            backgroundColor: index % 2 === 0 ? "#f3e5f5" : "#ffffff",
-                          }}
-                        >
-                          <td style={{ padding: "5px" }}>{member.name}</td>
-                          <td style={{ padding: "5px" }}>{member.gender}</td>
-                          <td style={{ padding: "5px" }}>{calculateAge(member.dob)}</td>
-                          <td style={{ padding: "5px" }}>{member.idType}</td>
-                          <td style={{ padding: "5px" }}>{member.idNumber}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </Box>
-              </Box>
-              <Box
-                sx={{
-                  flex: 1,
-                  p: 2,
-                  backgroundColor: "#4a148c",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                {qrCodeMap[event.eventId] && (
-                  <img
-                    src={qrCodeMap[event.eventId]}
-                    alt="QR Code"
-                    style={{
-                      width: isMobile ? 100 : 140,
-                      height: isMobile ? 100 : 140,
-                      background: "white",
-                      padding: 8,
-                      borderRadius: 10,
-                    }}
-                  />
-                )}
-              </Box>
+              {qrCodeMap[event.eventId] && (
+                <img
+                  src={qrCodeMap[event.eventId]}
+                  alt="QR Code"
+                  style={{
+                    width: isMobile ? 100 : 140,
+                    height: isMobile ? 100 : 140,
+                    background: "white",
+                    padding: 8,
+                    borderRadius: 10,
+                  }}
+                />
+              )}
             </Box>
-            <Box textAlign="center" mt={2}>
-              <Button
-                variant="contained"
-                sx={{ backgroundColor: "#6a1b9a", px: 4, py: 1, borderRadius: 3 }}
-                onClick={() => generatePDF(event)}
-              >
-                Download Ticket
-              </Button>
-            </Box>
-          </Grid>
-        ))}
-      </Grid>
+          </>
+        )}
+      </Box>
+
+      {/* Always show this button outside the condition */}
+      <Box textAlign="center" mt={2}>
+        <Button
+          variant="contained"
+          sx={{ backgroundColor: "#6a1b9a", px: 4, py: 1, borderRadius: 3 }}
+          onClick={() => generatePDF(event)}
+          disabled={Boolean(event.message)}
+        >
+          Download Ticket
+        </Button>
+      </Box>
+    </Grid>
+  ))}
+</Grid>
+
+       
     </Box>
   );
 };
