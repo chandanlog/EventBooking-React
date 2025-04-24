@@ -205,6 +205,27 @@ Mobile     : ${m.mobile}`
   
   return (
     <Box sx={{ background: "#f4f4f4", minHeight: "100vh", py: 4, px: 2 }}>
+      {eventList.length === 0 && (
+      <Box
+        sx={{
+          maxWidth: 600,
+          margin: "auto",
+          p: 4,
+          mt: 10,
+          textAlign: "center",
+          border: "1px dashed #ff9800",
+          borderRadius: 3,
+          backgroundColor: "#fff8e1",
+        }}
+      >
+        <Typography variant="h6" color="#e65100" gutterBottom>
+          ⏳ Booking Under Review
+        </Typography>
+        <Typography variant="body1" color="#e65100">
+          Your booking is under review. If you're an organization, please wait for admin approval.
+        </Typography>
+      </Box>
+      )}
       <Grid container spacing={4} justifyContent="center">
         {eventList.map((event) => (
           <Grid item xs={12} md={10} key={event.eventId}>
