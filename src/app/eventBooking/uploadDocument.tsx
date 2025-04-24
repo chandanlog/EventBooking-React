@@ -35,6 +35,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ onUploadSuccess }) => {
   const [errors, setErrors] = useState<{ idProof?: string; orgRequestLetter?: string }>({});
   const [loading, setLoading] = useState<boolean>(false);
   const [activeStep, setActiveStep] = useState(1);
+  const [successMessage, setSuccessMessage] = useState(false);
   useEffect(() => {
     const userTypeFromStorage = localStorage.getItem("userType");
     const userEmail = localStorage.getItem("email");
@@ -102,6 +103,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ onUploadSuccess }) => {
         },
       });
       console.log(response.data);
+      setSuccessMessage(true);
       setTimeout(() => {
         onUploadSuccess();
       }, 2000);
@@ -239,7 +241,15 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ onUploadSuccess }) => {
               >
                 {loading ? <CircularProgress size={24} color="inherit" /> : "Next"}
               </Button>
+                  
             </Grid>
+            {successMessage && (
+              <Box textAlign="center" sx={{ mt: 4 }}>
+                <Typography variant="h6" sx={{ color: "#2e7d32", fontWeight: 600 }}>
+                  Your Document Upload Successfully!
+                </Typography>
+              </Box>
+            )}
           </Grid>
         </form>
       </Paper>

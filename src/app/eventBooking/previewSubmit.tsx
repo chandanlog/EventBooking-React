@@ -1,5 +1,6 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import QRCode from "qrcode";
 import {
   Box,
   Card,
@@ -14,204 +15,336 @@ import {
   Stepper,
   Step,
   StepLabel,
+  TableContainer,
+  Paper,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-type PreviewAndSubmitProps = {
-  onUreviewSubmit: () => void;
-};
-const PreviewAndSubmit: React.FC<PreviewAndSubmitProps> = ({ onUreviewSubmit }) => {
+import axios from "axios";
+
+const PreviewAndSubmit = ({ onUreviewSubmit }) => {
+  const [successMessage, setSuccessMessage] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [activeStep, setActiveStep] = useState(2);
-  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const [eventData, setEventData] = useState(null);
+  const [userType, setUserType] = useState(null);
+  const [seatsBooked, setSeatsBooked] = useState(null);
+  const [qrCode, setQrCode] = useState("");
+  const [members, setMembers] = useState([]);
+  const [email, setEmail] = useState(null);
+  const [eventId, setEventId] = useState(null);
+
+  useEffect(() => {
+    const email = localStorage.getItem("email");
+    const storedEvents = localStorage.getItem("events");
+    const storedEventId = localStorage.getItem("eventId");
+    const storedUserType = localStorage.getItem("userType");
+    const storedNumSeats = localStorage.getItem("numSeats");
+    const storedMembers = localStorage.getItem("members");
+
+    setEmail(email);
+    setEventId(storedEventId);
+    if (storedUserType) setUserType(storedUserType);
+    if (storedNumSeats) setSeatsBooked(storedNumSeats);
+    if (storedMembers) setMembers(JSON.parse(storedMembers));
+
+    if (storedEvents && storedEventId) {
+      const eventsArray = JSON.parse(storedEvents);
+      const selectedEvent = eventsArray.find(
+        (event) => event.eventid === parseInt(storedEventId, 10)
+      );
+
+      if (selectedEvent) {
+        setEventData({
+          ...selectedEvent,
+          userType: storedUserType,
+          seatsBooked: storedNumSeats,
+        });
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!eventData || members.length === 0) return;
+
+    const formDataString = `
+🎫 EventHub Ticket Preview
+========================
+Event       : ${eventData.title}
+Date        : ${eventData.date}
+Location    : ${eventData.location}
+User Type   : ${eventData.userType}
+Seats Booked: ${eventData.seatsBooked}
+
+👥 Members List:
+${members.map((m, i) => 
+`------------------------
+#${i + 1}
+Name     : ${m.name}
+Gender   : ${m.gender}
+DOB      : ${m.dob}
+ID Type  : ${m.idType.toUpperCase()}
+ID No.   : ${m.idNumber}
+Mobile   : ${m.mobile}`
+).join("\n")}
+
+========================
+✅ Thank you for booking!
+`;
+
+    QRCode.toDataURL(formDataString)
+      .then((url) => setQrCode(url))
+      .catch((err) => console.error("Failed to generate QR Code:", err));
+  }, [eventData, members]);
+
+  const handleCheckboxChange = (event) => {
     setAcceptedTerms(event.target.checked);
   };
-
-  const eventData = {
-    eventName: "Tech Conference 2025",
-    eventDate: "May 15, 2025",
-    location: "New York City, USA",
-    description: "Join us for an exciting day of tech talks and networking with industry leaders.",
-    organizer: "Tech Co. Inc.",
-    seatsBooked: 3,
+  
+  const handleSubmit = async () => {
+    const API_URL = process.env.NEXT_PUBLIC_API_URL;
+    const formData = new FormData();
+    formData.append("userEmail", email);
+    formData.append("eventId",eventId);
+    formData.append("qrCode",qrCode);
+    try {
+      const response = await axios.post(`${API_URL}/event/finalSubmit`, formData);
+      console.log("Event form data saved successfully:", response.data);
+      setSuccessMessage(true);
+      setTimeout(() => {
+        onUreviewSubmit();
+      }, 2000);
+    } catch (err) {
+      console.error('Error:', err);
+    }
   };
+
+  if (!eventData) {
+    return (
+      <Typography variant="h6" sx={{ mt: 10, textAlign: "center", color: "#9e9e9e" }}>
+        Loading event data...
+      </Typography>
+    );
+  }
 
   return (
     <>
-    <Stepper activeStep={activeStep} alternativeLabel>
-      {["Event Details", "Upload Document", "Review & Submit"].map((label, index) => (
-        <Step key={label}>
-          <StepLabel
-            sx={{
-              "& .MuiStepLabel-label": {
-                color: "#9e9e9e", // default color
-                mb:2,
-              },
-              "& .MuiStepLabel-label.Mui-active": {
-                color: "#3b0083",
-                fontWeight: "bold",
-                mb:2,
-              },
-              "& .MuiStepLabel-label.Mui-completed": {
-                color: "#3b0083",
-                mb:2,
-              },
-            }}
-          >
-            {label}
-          </StepLabel>
-        </Step>
-      ))}
-    </Stepper>
-    <Box
-      sx={{
-        minHeight: "100vh",
-        py: 6,
-        px: { xs: 2, sm: 4, md: 8 },
-        background: "linear-gradient(to bottom right, rgba(255,255,255,0.6), rgba(255,255,255,0.3))",
-        backdropFilter: "blur(12px)",
-      }}
-    >
-      <Typography
-        variant="h5"
-        sx={{
-          fontWeight: 600,
-          mb: 4,
-          textAlign: "center",
-          color: "#3b008",  // Color for heading text
-          textTransform: "uppercase",
-          letterSpacing: 1.2,
-        }}
-      >
-        Preview Your Ticket
-      </Typography>
-
-      <Grid container spacing={4} maxWidth="lg" margin="0 auto">
-        {/* Event Ticket Card */}
-        <Grid item xs={12} md={8}>
-          <Card
-            sx={{
-              borderRadius: 3,
-              boxShadow: 6,
-              p: 3,
-              background: "linear-gradient(135deg, #f3f3f3, #ffffff)",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              position: "relative",
-              overflow: "hidden",
-            }}
-          >
-            {/* Ticket Border */}
-            <Box
+      <Stepper activeStep={activeStep} alternativeLabel>
+        {["Event Details", "Upload Document", "Review & Submit"].map((label) => (
+          <Step key={label}>
+            <StepLabel
               sx={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                border: "2px solid #3b008", // Border around the ticket
-                borderRadius: 3,
-                zIndex: 1,
-              }}
-            />
-
-            <Typography variant="h6" sx={{ fontWeight: 600, color: "#3b008", mb: 2, zIndex: 2 }}>
-              {eventData.eventName}
-            </Typography>
-
-            <Divider sx={{ width: "100%", my: 3 }} />
-
-            <Box sx={{ width: "100%", mb: 3, zIndex: 2 }}>
-              <Typography sx={{ fontSize: 14, mb: 1, color: "#3b008" }}>
-                <strong>Date:</strong> {eventData.eventDate}
-              </Typography>
-              <Typography sx={{ fontSize: 14, mb: 1, color: "#3b008" }}>
-                <strong>Location:</strong> {eventData.location}
-              </Typography>
-              <Typography sx={{ fontSize: 14, mb: 1, color: "#3b008" }}>
-                <strong>Organizer:</strong> {eventData.organizer}
-              </Typography>
-              <Typography sx={{ fontSize: 14, color: "#3b008" }}>
-                <strong>Seats Booked:</strong> {eventData.seatsBooked}
-              </Typography>
-            </Box>
-
-            {/* Event Description */}
-            <Card sx={{ width: "100%", p: 2, background: "rgba(255, 255, 255, 0.8)", borderRadius: 3 }}>
-              <Typography variant="body2" sx={{ color: "#3b008" }}>
-                <strong>Description:</strong> {eventData.description}
-              </Typography>
-            </Card>
-          </Card>
-        </Grid>
-
-        {/* Submit Box */}
-        <Grid item xs={12} md={4}>
-          <Card
-            sx={{
-              p: 4,
-              borderRadius: 3,
-              backgroundColor: "#f9f9f9",
-              boxShadow: 4,
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              height: "100%",
-            }}
-          >
-            <Typography
-              variant="subtitle1"
-              sx={{
-                fontWeight: 500,
-                mb: 3,
-                color: "#3b008",
-                textTransform: "uppercase",
-                letterSpacing: 1.5,
-              }}
-            >
-              Confirm & Submit
-            </Typography>
-
-            <Typography variant="body2" sx={{ mb: 3, color: "#3b008" }}>
-              Ensure all event details are correct. Check the box and submit to confirm your booking.
-            </Typography>
-
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={acceptedTerms}
-                  onChange={handleCheckboxChange}
-                  color="primary"
-                  size="small"
-                />
-              }
-              label="Accept Terms"
-              sx={{ mb: 2 }}
-            />
-
-            <Button
-              variant="contained"
-              size="large"
-              fullWidth
-              disabled={!acceptedTerms}
-              sx={{
-                textTransform: "none",
-                fontWeight: 600,
-                borderRadius: 2,
-                backgroundColor: "#3b008",  // Color for the button
-                "&:hover": {
-                  backgroundColor: "#2a0066",  // Darker shade on hover
+                "& .MuiStepLabel-label": { color: "#9e9e9e", mb: 2 },
+                "& .MuiStepLabel-label.Mui-active": {
+                  color: "#3b0083",
+                  fontWeight: "bold",
+                },
+                "& .MuiStepLabel-label.Mui-completed": {
+                  color: "#3b0083",
                 },
               }}
             >
-              Submit Booking
-            </Button>
-          </Card>
+              {label}
+            </StepLabel>
+          </Step>
+        ))}
+      </Stepper>
+
+      <Box sx={{ minHeight: "100vh", py: 4, px: { xs: 2, sm: 4, md: 8 } }}>
+        {/* Event Ticket Preview Card */}
+        <Grid container justifyContent="center">
+          <Grid item xs={12} md={9}>
+            <Card
+              sx={{
+                borderRadius: 4,
+                boxShadow: 6,
+                p: 4,
+                background: "#ffffff",
+                border: "3px dashed #ab47bc",
+              }}
+            >
+              <Typography
+                variant="h4"
+                sx={{
+                  fontWeight: 700,
+                  textAlign: "center",
+                  color: "#6a1b9a",
+                  mb: 3,
+                  textTransform: "uppercase",
+                }}
+              >
+                {eventData.title}
+              </Typography>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="body1" sx={{ color: "#4a148c" }}>
+                    <strong>Date:</strong> {eventData.date}
+                  </Typography>
+                  <Typography variant="body1" sx={{ color: "#4a148c" }}>
+                    <strong>Location:</strong> {eventData.location}
+                  </Typography>
+                  <Typography variant="body1" sx={{ color: "#4a148c" }}>
+                    <strong>Organizer:</strong> EventHub
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="body1" sx={{ color: "#4a148c" }}>
+                    <strong>Booking Type:</strong> {userType}
+                  </Typography>
+                  <Typography variant="body1" sx={{ color: "#4a148c" }}>
+                    <strong>Seats Booked:</strong> {seatsBooked}
+                  </Typography>
+                  {qrCode && (
+                    <Box mt={2} textAlign="center">
+                      <img src={qrCode} alt="QR Code" width={120} height={120} />
+                    </Box>
+                  )}
+                </Grid>
+              </Grid>
+
+              {members.length > 0 && (
+                <Box mt={4}>
+                  <Typography
+                    variant="subtitle1"
+                    sx={{ color: "#6a1b9a", fontWeight: 600, mb: 2 }}
+                  >
+                    👥 Member Details
+                  </Typography>
+                  <TableContainer component={Paper} elevation={2}>
+                    <Table size="small">
+                      <TableHead>
+                        <TableRow sx={{ backgroundColor: "#f3e5f5" }}>
+                          <TableCell sx={{ fontSize: "0.75rem" }}>#</TableCell>
+                          <TableCell sx={{ fontSize: "0.75rem" }}>Name</TableCell>
+                          <TableCell sx={{ fontSize: "0.75rem" }}>Gender</TableCell>
+                          <TableCell sx={{ fontSize: "0.75rem" }}>DOB</TableCell>
+                          <TableCell sx={{ fontSize: "0.75rem" }}>ID Type</TableCell>
+                          <TableCell sx={{ fontSize: "0.75rem" }}>ID No.</TableCell>
+                          <TableCell sx={{ fontSize: "0.75rem" }}>Mobile</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {members.map((m, i) => (
+                          <TableRow key={i}>
+                            <TableCell sx={{ fontSize: "0.75rem" }}>{i + 1}</TableCell>
+                            <TableCell sx={{ fontSize: "0.75rem" }}>{m.name}</TableCell>
+                            <TableCell sx={{ fontSize: "0.75rem" }}>{m.gender}</TableCell>
+                            <TableCell sx={{ fontSize: "0.75rem" }}>{m.dob}</TableCell>
+                            <TableCell sx={{ fontSize: "0.75rem" }}>{m.idType.toUpperCase()}</TableCell>
+                            <TableCell sx={{ fontSize: "0.75rem" }}>{m.idNumber}</TableCell>
+                            <TableCell sx={{ fontSize: "0.75rem" }}>{m.mobile}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Box>
+              )}
+
+              <Typography variant="body2" sx={{ mt: 3, fontStyle: "italic", color: "#6a1b9a" }}>
+                "A grand event showcasing technological innovation and leadership from all EventHub."
+              </Typography>
+            </Card>
+          </Grid>
         </Grid>
-      </Grid>
-    </Box>
+
+        {/* Confirm & Submit Card (new row) */}
+        <Grid container justifyContent="center" sx={{ mt: 4 }}>
+  <Grid item xs={12} md={6} lg={4}>
+    <Card
+      sx={{
+        px: 4,
+        py: 5,
+        borderRadius: 5,
+        backdropFilter: "blur(10px)",
+        background: "rgba(255, 255, 255, 0.8)",
+        boxShadow: "0 8px 30px rgba(0, 0, 0, 0.1)",
+        border: "1px solid rgba(255, 255, 255, 0.3)",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      <Box sx={{ position: "absolute", top: -20, right: -20, opacity: 0.05 }}>
+        <img src="/ticket-icon.png" alt="ticket" width={150} />
+      </Box>
+
+      <Typography
+        variant="h5"
+        align="center"
+        sx={{
+          fontWeight: 700,
+          mb: 2,
+          color: "#6a1b9a",
+        }}
+      >
+        🎉 Ready to Go!
+      </Typography>
+
+      <Typography
+        variant="body1"
+        align="center"
+        sx={{ color: "#4a148c", mb: 3 }}
+      >
+        Double-check your details. If everything looks good, hit submit!
+      </Typography>
+
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={acceptedTerms}
+            onChange={handleCheckboxChange}
+            sx={{ color: "#6a1b9a" }}
+          />
+        }
+        label={
+          <Typography variant="body2" sx={{ color: "#6a1b9a" }}>
+            I agree to the terms & conditions
+          </Typography>
+        }
+      />
+
+      <Button
+        onClick={handleSubmit}
+        variant="contained"
+        fullWidth
+        disabled={!acceptedTerms}
+        sx={{
+          mt: 3,
+          py: 1,
+          fontSize: "1rem",
+          fontWeight: 500,
+          background: "#8e24aa",
+          color: "#fff",
+          transition: "0.3s",
+          borderRadius: "30px",
+          "&:hover": {
+            background: "#6a1b9a",
+            boxShadow: "0 4px 20px rgba(138, 43, 226, 0.4)",
+            transform: "translateY(-2px)",
+          },
+        }}
+      >
+        ✅ Submit Booking
+      </Button>
+      {successMessage && (
+      <Box textAlign="center" sx={{ mt: 4 }}>
+        <Typography variant="h6" sx={{ color: "#2e7d32", fontWeight: 600 }}>
+          ✅ Booking Submitted Successfully!
+        </Typography>
+        <Typography variant="body2" sx={{ color: "#4caf50" }}>
+          Redirecting to confirmation page...
+        </Typography>
+      </Box>
+    )}
+    </Card>
+  </Grid>
+</Grid>
+</Box>
     </>
   );
 };
