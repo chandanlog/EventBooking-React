@@ -1,66 +1,67 @@
-# 🎫 Event Booking System
 
-A full-stack event booking platform developed using **Next.js**, **Nest.js**, and **MySQL**. The system allows users to register for events, upload documents, add member details, and download tickets with QR codes.
+🎫 Event Booking System
+A full-stack event booking platform developed using Next.js, Nest.js, and MySQL. The system allows users to register for events, upload documents, add member details, and download tickets with QR codes.
 
----
+🚀 Tech Stack
+Frontend: Next.js, React.js, Material UI (MUI)
 
-## 🚀 Tech Stack
+Backend: Nest.js, TypeORM
 
-- **Frontend**: Next.js, React.js, Material UI (MUI)
-- **Backend**: Nest.js, TypeORM
-- **Database**: MySQL (hosted on Railway)
-- **Other Tools**: Axios, QR Code Generator, PDFKit
+Database: MySQL (hosted on Railway)
 
----
+Other Tools: Axios, QR Code Generator, PDFKit
 
-## 📦 Deployment
+📦 Deployment
 
-| Layer      | Platform  | URL                                     |
-|------------|-----------|-----------------------------------------|
-| Frontend   | Vercel    | https://event-booking-react.vercel.app/ |
-| Backend    | Render    | https://your-backend.onrender.com       |
-| Database   | Railway   | MySQL hosted on Railway                 |
+Layer	Platform	URL
+Frontend	Vercel	https://event-booking-react.vercel.app/
+Backend	Render	https://your-backend.onrender.com
+Database	Railway	MySQL hosted on Railway
+✅ Make sure to update the .env files with your Railway DB credentials and Render backend URL in your frontend.
 
-> ✅ Make sure to update the `.env` files with your Railway DB credentials and Render backend URL in your frontend.
+📌 Features
+🎟️ Event booking form with dynamic fields
 
----
+🧍 Individual or 🏢 Organization-based registration
 
-## 📌 Features
+📁 Conditional document uploads
 
-- 🎟️ Event booking form with dynamic fields
-- 🧍 Individual or 🏢 Organization-based registration
-- 📁 Conditional document uploads
-- ➕ Inline Add/Edit/Delete multiple members
-- 📍 Structured address selection (State, District, Pincode)
-- 👀 Preview & Submit before final submission
-- 🧾 Download ticket with QR code
-- 📱 Fully responsive and modern design
-- 🔐 Section-wise navigation with access control
+➕ Inline Add/Edit/Delete multiple members
 
----
+📍 Structured address selection (State, District, Pincode)
 
-## 🗂️ Project Structure
+👀 Preview & Submit before final submission
 
-event-booking/ ├── frontend/ # Next.js frontend │ ├── components/ # Reusable components │ ├── pages/ # Routing pages │ └── styles/ # MUI & global styles │ └── backend/ # Nest.js backend ├── src/ │ ├── modules/ # Event, Member, Document │ ├── database/ # TypeORM config │ └── main.ts # Entry point
+🧾 Download ticket with QR code
 
-yaml
+📱 Fully responsive and modern design
+
+🔐 Section-wise navigation with access control
+
+🗂️ Project Structure
+csharp
 Copy
 Edit
+event-booking/
+├── frontend/  # Next.js frontend
+│   ├── components/  # Reusable components
+│   ├── pages/  # Routing pages
+│   └── styles/  # MUI & global styles
+└── backend/  # Nest.js backend
+    ├── src/
+    │   ├── modules/  # Event, Member, Document
+    │   ├── database/  # TypeORM config
+    │   └── main.ts  # Entry point
+⚙️ Getting Started (Locally)
+Prerequisites
+Node.js (v18 or higher)
 
----
+MySQL or Railway DB access
 
-## ⚙️ Getting Started (Locally)
-
-### Prerequisites
-
-- Node.js (v18 or higher)
-- MySQL or Railway DB access
-
----
-
-### 1. Clone the Repository
-
-```bash
+1. Clone the Repository
+bash
+Copy
+Edit
 git clone https://github.com/chandanlog/EventBooking-React.git
 cd event-booking
 2. Setup Frontend (Next.js)
@@ -70,15 +71,15 @@ Edit
 cd frontend
 npm install
 npm run dev
-Frontend runs on: http://localhost:3000
-
+# Frontend runs on: http://localhost:3000
 3. Setup Backend (Nest.js)
-git clone https://github.com/chandanlog/EventBooking-API.git
+bash
 Copy
 Edit
+git clone https://github.com/chandanlog/EventBooking-API.git
 cd backend
 npm install
-Create a .env file inside backend/:
+Create a .env file inside the backend/ folder:
 
 env
 Copy
@@ -95,8 +96,7 @@ bash
 Copy
 Edit
 npm run start:dev
-Backend runs on: http://localhost:5000
-
+# Backend runs on: http://localhost:5000
 🌐 Environment Variables
 Frontend .env.local
 env
@@ -121,7 +121,6 @@ POST	/member	Add member details
 POST	/document/upload	Upload ID proof/documents
 GET	/preview/:userId	Get preview before submission
 GET	/ticket/:userId	Download ticket with QR code
-
 🧠 Future Enhancements
 Admin panel for managing events & users
 
