@@ -1,67 +1,54 @@
+# 🎫 Event Booking System
 
-🎫 Event Booking System
-A full-stack event booking platform developed using Next.js, Nest.js, and MySQL. The system allows users to register for events, upload documents, add member details, and download tickets with QR codes.
+A full-stack event booking platform developed using **Next.js**, **Nest.js**, and **MySQL**. The system allows users to register for events, upload documents, add member details, and download tickets with QR codes.
 
-🚀 Tech Stack
-Frontend: Next.js, React.js, Material UI (MUI)
+---
 
-Backend: Nest.js, TypeORM
+## 🚀 Tech Stack
 
-Database: MySQL (hosted on Railway)
+- **Frontend**: Next.js, React.js, Material UI (MUI)
+- **Backend**: Nest.js, TypeORM
+- **Database**: MySQL (hosted on Railway)
+- **Other Tools**: Axios, QR Code Generator, PDFKit
 
-Other Tools: Axios, QR Code Generator, PDFKit
+---
 
-📦 Deployment
+## 📦 Deployment
 
-Layer	Platform	URL
-Frontend	Vercel	https://event-booking-react.vercel.app/
-Backend	Render	https://your-backend.onrender.com
-Database	Railway	MySQL hosted on Railway
-✅ Make sure to update the .env files with your Railway DB credentials and Render backend URL in your frontend.
+| Layer      | Platform  | URL                                     |
+|------------|-----------|-----------------------------------------|
+| Frontend   | Vercel    | https://event-booking-react.vercel.app/ |
+| Backend    | Render    | https://your-backend.onrender.com       |
+| Database   | Railway   | MySQL hosted on Railway                 |
 
-📌 Features
-🎟️ Event booking form with dynamic fields
+> ✅ Make sure to update the `.env` files with your Railway DB credentials and Render backend URL in your frontend.
 
-🧍 Individual or 🏢 Organization-based registration
+---
 
-📁 Conditional document uploads
+## 📌 Features
 
-➕ Inline Add/Edit/Delete multiple members
+- 🎟️ Event booking form with dynamic fields
+- 🧍 Individual or 🏢 Organization-based registration
+- 📁 Conditional document uploads
+- ➕ Inline Add/Edit/Delete multiple members
+- 📍 Structured address selection (State, District, Pincode)
+- 👀 Preview & Submit before final submission
+- 🧾 Download ticket with QR code
+- 📱 Fully responsive and modern design
+- 🔐 Section-wise navigation with access control
 
-📍 Structured address selection (State, District, Pincode)
+---
 
-👀 Preview & Submit before final submission
+## ⚙️ Getting Started (Locally)
 
-🧾 Download ticket with QR code
+### Prerequisites
 
-📱 Fully responsive and modern design
+- Node.js (v18 or higher)
+- MySQL or Railway DB access
 
-🔐 Section-wise navigation with access control
+### 1. Clone the Repository
 
-🗂️ Project Structure
-csharp
-Copy
-Edit
-event-booking/
-├── frontend/  # Next.js frontend
-│   ├── components/  # Reusable components
-│   ├── pages/  # Routing pages
-│   └── styles/  # MUI & global styles
-└── backend/  # Nest.js backend
-    ├── src/
-    │   ├── modules/  # Event, Member, Document
-    │   ├── database/  # TypeORM config
-    │   └── main.ts  # Entry point
-⚙️ Getting Started (Locally)
-Prerequisites
-Node.js (v18 or higher)
-
-MySQL or Railway DB access
-
-1. Clone the Repository
-bash
-Copy
-Edit
+```bash
 git clone https://github.com/chandanlog/EventBooking-React.git
 cd event-booking
 2. Setup Frontend (Next.js)
