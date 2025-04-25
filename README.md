@@ -61,7 +61,7 @@ Edit
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/event-booking.git
+git clone https://github.com/chandanlog/EventBooking-React.git
 cd event-booking
 2. Setup Frontend (Next.js)
 bash
@@ -73,7 +73,9 @@ npm run dev
 Frontend runs on: http://localhost:3000
 
 3. Setup Backend (Nest.js)
-bash
+
+```bash
+git clone https://github.com/chandanlog/EventBooking-API.git
 Copy
 Edit
 cd backend
