@@ -73,8 +73,6 @@ npm run dev
 Frontend runs on: http://localhost:3000
 
 3. Setup Backend (Nest.js)
-
-```bash
 git clone https://github.com/chandanlog/EventBooking-API.git
 Copy
 Edit
