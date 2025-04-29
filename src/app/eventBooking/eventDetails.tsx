@@ -67,13 +67,37 @@ export default function EventDetails({ onSubmitSuccess }: EventDetailsProps) {
     userEmail: "",
   });
 const [events,setEvents] = useState([]);
+const [openSnackbar, setOpenSnackbar] = useState(false);
+const [submitted, setSubmitted] = useState(false);
+const [openModal, setOpenModal] = useState(false);
+const [members, setMembers] = useState([]);
+const [submissionSuccess, setSubmissionSuccess] = useState(false);
+const [snackbarMessage, setSnackbarMessage] = useState("");
+const [snackbarColor, setSnackbarColor] = useState<"success" | "error" | "warning" | "info">("success"); // explicitly typing snackbarColor
+
 useEffect(() => {
   const eventsData = localStorage.getItem("events");
   setEvents(JSON.parse(eventsData))
 },[])
 
+  // Validation: Only allow alphanumeric and spaces
+  const isValidInput = (value: string) => /^[a-zA-Z0-9\s]*$/.test(value);
+
+  // Format field names for Snackbar message
+  const formatFieldName = (fieldName: string) => {
+    return fieldName
+      .replace(/([A-Z])/g, " $1")
+      .replace(/^./, (str) => str.toUpperCase());
+  };
   const handleChange = (e) => {
     const { name, value } = e.target;
+    // Validate value
+    if (!isValidInput(value)) {
+      setSnackbarColor('error');
+      setSnackbarMessage(`Special characters are not allowed in ${formatFieldName(name)}`);
+      setOpenSnackbar(true);
+      return;
+    }
     setFormData((prev) => ({
       ...prev,
       [name]: name === "numSeats" ? Number(value) : value,
@@ -105,29 +129,27 @@ useEffect(() => {
     }
   }, [formData.eventName]);
 
-const [openSnackbar, setOpenSnackbar] = useState(false);
-const [submitted, setSubmitted] = useState(false);
-const [openModal, setOpenModal] = useState(false);
-const [members, setMembers] = useState([]);
-const [submissionSuccess, setSubmissionSuccess] = useState(false);
+  useEffect(() => {
+    // Fetch data from localStorage if available
+    const savedFormData = localStorage.getItem("eventDetails");
+    if (savedFormData) {
+      setFormData(JSON.parse(savedFormData));
+    }
+  }, []);
+
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const handleSubmit = async (e) => {
   e.preventDefault();
   try {
-    console.log(formData);
     // Call the backend API to save event form data
     const response = await axios.post(`${API_URL}/event`, formData);
-    console.log("Event form data saved successfully:", response.data);
-
-    // If the user type is "organization", proceed to add members
-    if (formData.userType === "organization") {
-      setSubmitted(true);
-    } else {
-      console.log("Form Submitted:", formData);
-    }
-    setOpenSnackbar(true);
   
+    localStorage.setItem("eventDetails", JSON.stringify(formData));
+    setSnackbarColor('success');
+    setSnackbarMessage("Your basic details have been submitted!");
+    setOpenSnackbar(true);
+    
   setTimeout(() => {
     setSubmitted(true);
   }, 2000);
@@ -156,7 +178,9 @@ const handleSubmitAllMembers = async () => {
     localStorage.setItem("numSeats",String(formData.numSeats));
     localStorage.setItem("members",JSON.stringify(members));
 
-    setOpenSnackbar(true); // show success
+    setSnackbarColor('success');
+    setSnackbarMessage("All members submitted successfully!");
+    setOpenSnackbar(true);
     setSubmissionSuccess(true);
     setTimeout(() => {
       onSubmitSuccess();
@@ -456,10 +480,15 @@ const handleSubmitAllMembers = async () => {
         onClose={() => setOpenSnackbar(false)}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert onClose={() => setOpenSnackbar(false)} severity="success" variant="filled">
+        {/* <Alert onClose={() => setOpenSnackbar(false)} severity="success" variant="filled">
         Your basic details have been submitted!
+        </Alert> */}
+
+        <Alert onClose={() => setOpenSnackbar(false)}  severity={snackbarColor} variant="filled" sx={{ width: "100%" }}>
+          {snackbarMessage}
         </Alert>
       </Snackbar>
+      
 </Grid>
               </Grid>
               <AddMemberModal
@@ -566,17 +595,6 @@ const handleSubmitAllMembers = async () => {
               Next
             </Button>
           )}
-
-          <Snackbar
-            open={openSnackbar}
-            autoHideDuration={3000}
-            onClose={() => setOpenSnackbar(false)}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-          >
-            <Alert onClose={() => setOpenSnackbar(false)} severity="success" variant="filled">
-              All members submitted successfully!
-            </Alert>
-          </Snackbar>
         </Box>
       )}
 
