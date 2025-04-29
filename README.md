@@ -16,11 +16,11 @@ A full-stack event booking platform developed using **Next.js**, **Nest.js**, an
 
 ## 📦 Deployment
 
-| Layer      | Platform  | URL                                     |
-|------------|-----------|-----------------------------------------|
-| Frontend   | Vercel    | https://event-booking-react.vercel.app/ |
-| Backend    | Render    | https://your-backend.onrender.com       |
-| Database   | Railway   | MySQL hosted on Railway                 |
+| Layer      | Platform  | URL                                        |
+|------------|-----------|--------------------------------------------|
+| Frontend   | Vercel    | https://event-booking-react.vercel.app/    |
+| Backend    | Render    | https://eventbooking-api-qhkv.onrender.com |
+| Database   | Railway   | MySQL hosted on Railway                    |
 
 > ✅ Make sure to update the `.env` files with your Railway DB credentials and Render backend URL in your frontend.
 
