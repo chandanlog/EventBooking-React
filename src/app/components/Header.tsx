@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AppBar, Toolbar, Typography, Box, Button } from "@mui/material";
+import { usePathname } from 'next/navigation';
+
 
 // Set your basePath from env or fallback to empty
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
@@ -25,12 +27,11 @@ const Header = () => {
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
-  const handleLogout = () => {
-    localStorage.clear();
-    sessionStorage.clear();
-    setIsLoggedIn(false);
-    router.push(`${basePath}/`);
-  };
+  const pathname = usePathname();
+
+  const isAdminPage = pathname === '/admin';
+  const buttonLabel = isAdminPage ? 'Home' : 'Admin';
+  const targetHref = isAdminPage ? '/' : '/admin';
 
   return (
     <AppBar position="static" sx={{ bgcolor: "#0c0c0c", px: 2 }}>
@@ -50,27 +51,25 @@ const Header = () => {
         >
           EventHub
         </Typography>
-
-        {/* Navigation */}
-{/*         <Box>
-          <Button component={Link} href={`${basePath}/`} sx={navStyle}>
-            Home
-          </Button>
-          {isLoggedIn ? (
-            <>
-              <Button component={Link} href={`${basePath}/dashboard`} sx={navStyle}>
-                Dashboard
-              </Button>
-              <Button onClick={handleLogout} sx={navStyle}>
-                Logout
-              </Button>
-            </>
-          ) : (
-            <Button component={Link} href={`${basePath}/login`} sx={navStyle}>
-              Login
-            </Button>
-          )}
-        </Box> */}
+        <Button
+        variant="outlined"
+        color="success"
+        component={Link}
+        href={targetHref}
+        sx={{
+          borderColor: "#36d576",
+          color: "#36d576",
+          "&:hover": {
+            bgcolor: "#36d576",
+            color: "#0c0c0c",
+            borderColor: "#36d576",
+          },
+          fontWeight: "bold",
+          textTransform: "none",
+        }}
+      >
+        {buttonLabel}
+      </Button>
       </Toolbar>
     </AppBar>
   );

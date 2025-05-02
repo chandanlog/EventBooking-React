@@ -22,6 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   // If we are on the dashboard, don't show the header/footer
   const isDashboard = pathname.startsWith("/dashboard");
+  const isAdminDashboard = pathname.startsWith("/adminDashboard");
 
   // Redirect to home page if no valid route found
   useEffect(() => {
@@ -34,9 +35,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <CssBaseline />
-        {!isDashboard && <Header />}
+        {!isDashboard && !isAdminDashboard && <Header />}
         <main>{children}</main>
-        {!isDashboard && <Footer />}
+        {!isDashboard && !isAdminDashboard  && <Footer />}
       </body>
     </html>
   );
