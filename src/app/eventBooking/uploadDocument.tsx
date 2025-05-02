@@ -91,6 +91,7 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ onUploadSuccess }) => {
     formData.append("idProof", idProof);
     formData.append("userEmail", userEmail);
     formData.append("eventId",eventId);
+    formData.append("userType",userType);
     if (userType === "organization" && orgRequestLetter) {
       formData.append("orgRequestLetter", orgRequestLetter);
     }

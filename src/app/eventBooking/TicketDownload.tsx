@@ -58,8 +58,9 @@ const TicketDownload: React.FC = () => {
         const grouped: Record<number, EventData> = {};
 
         rawData.forEach((item: any) => {
-          if (!grouped[item.eventId]) {
-            grouped[item.eventId] = {
+          const ticketKey = item.ticketNo;
+          if (!grouped[ticketKey]) {
+            grouped[ticketKey] = {
               eventId: item.eventId || "0",
               eventName: item.eventName,
               eventDate: item.eventDate,
@@ -71,7 +72,7 @@ const TicketDownload: React.FC = () => {
             };
           }
 
-          grouped[item.eventId].members.push({
+          grouped[ticketKey].members.push({
             name: item.name,
             email: item.userEmail,
             mobile: item.mobile,
@@ -112,7 +113,8 @@ Mobile     : ${m.mobile}`
 ========================
 ✅ Thank you for booking!
 `;
-          qrMap[event.eventId] = await QRCode.toDataURL(qrString);
+          const qrKey = `${event.eventId}-${event.ticketNo}`;
+          qrMap[qrKey] = await QRCode.toDataURL(qrString);
         }
         setQrCodeMap(qrMap);
       } catch (error) {
@@ -134,8 +136,8 @@ Mobile     : ${m.mobile}`
     doc.setTextColor("white");
     doc.setFontSize(14);
     doc.text(`Ticket No: ${event.ticketNo}`, margin, 40);
-
-    const qrImage = qrCodeMap[event.eventId];
+    const qrKeys = `${event.eventId}-${event.ticketNo}`;
+    const qrImage = qrCodeMap[qrKeys];
     if (qrImage) {
       doc.addImage(qrImage, "PNG", pageWidth - 160, 30, 100, 100);
     }
@@ -231,7 +233,7 @@ Mobile     : ${m.mobile}`
       )} 
       <Grid container spacing={4} justifyContent="center">
   {eventList.map((event) => (
-    <Grid item xs={12} md={10} key={event.eventId}>
+    <Grid item xs={12} md={10} key={`${event.ticketNo}_${event.eventId}`}>
       <Box
         sx={{
           borderRadius: "20px",
@@ -288,8 +290,8 @@ Mobile     : ${m.mobile}`
                 📅 {event.eventDate} | 🕒 {event.time}
               </Typography>
               <Typography variant="body1">📍 {event.eventLoaction}</Typography>
-              <Typography variant="body2" mt={2}>
-                🎟 Ticket No: {event.ticketNo}
+              <Typography variant="body2" mt={1}>
+                🎟 Ticket No: {event.ticketNo} | {event.members[0]?.userType === "individual" ? "👤 Booking Type : Individual" : "🏢 Booking Type : Organization"}
               </Typography>
               <Divider sx={{ my: 2 }} />
               <Typography fontWeight={600} mb={1} color="#4a148c">
@@ -335,9 +337,9 @@ Mobile     : ${m.mobile}`
                 justifyContent: "center",
               }}
             >
-              {qrCodeMap[event.eventId] && (
+              {qrCodeMap[`${event.eventId}-${event.ticketNo}`] && (
                 <img
-                  src={qrCodeMap[event.eventId]}
+                  src={qrCodeMap[`${event.eventId}-${event.ticketNo}`]}
                   alt="QR Code"
                   style={{
                     width: isMobile ? 100 : 140,
