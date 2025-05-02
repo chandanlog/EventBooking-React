@@ -159,9 +159,17 @@ const handleSubmit = async (e) => {
       setSubmitted(true);
     }, 2000);
   } catch (error) {
-    console.error("Error saving event form data:", error);
-    setSnackbarColor('error');
-    setSnackbarMessage("Submission failed. Please check your inputs.");
+    if(error.response){
+      const errorMessage = error.response?.data?.message || 'Submission failed. Please try again later.';
+      setSnackbarColor('error');
+      setSnackbarMessage(errorMessage);
+    } else if (error.request) {
+      setSnackbarColor('error');
+      setSnackbarMessage("No response from server. Please check your connection.");
+    } else {
+      setSnackbarColor('error');
+      setSnackbarMessage("An unexpected error occurred. Please try again.");
+    }
     setOpenSnackbar(true);
   }
 };
@@ -180,8 +188,8 @@ const handleSubmitAllMembers = async () => {
       eventId: formData.eventId, // or however you're tracking the event
       members: members,
       userEmail: formData.userEmail,
+      userType: formData.userType,
     });
-    console.log("All members submitted successfully:", response.data);
     localStorage.setItem("userType",formData.userType);
     localStorage.setItem("eventId",formData.eventId);
     localStorage.setItem("numSeats",String(formData.numSeats));
@@ -485,14 +493,10 @@ const handleSubmitAllMembers = async () => {
 
       <Snackbar
         open={openSnackbar}
-        autoHideDuration={2000}
+        autoHideDuration={3000}
         onClose={() => setOpenSnackbar(false)}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        {/* <Alert onClose={() => setOpenSnackbar(false)} severity="success" variant="filled">
-        Your basic details have been submitted!
-        </Alert> */}
-
         <Alert onClose={() => setOpenSnackbar(false)}  severity={snackbarColor} variant="filled" sx={{ width: "100%" }}>
           {snackbarMessage}
         </Alert>

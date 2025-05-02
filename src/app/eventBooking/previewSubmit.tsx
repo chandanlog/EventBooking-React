@@ -112,6 +112,7 @@ Mobile   : ${m.mobile}`
     formData.append("userEmail", email);
     formData.append("eventId",eventId);
     formData.append("qrCode",qrCode);
+    formData.append("userType",userType);
     try {
       const response = await axios.post(`${API_URL}/event/finalSubmit`, formData);
       console.log("Event form data saved successfully:", response.data);
