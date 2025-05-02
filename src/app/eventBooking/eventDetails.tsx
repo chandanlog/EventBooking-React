@@ -142,21 +142,30 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const handleSubmit = async (e) => {
   e.preventDefault();
   try {
-    // Call the backend API to save event form data
-    const response = await axios.post(`${API_URL}/event`, formData);
-  
-    localStorage.setItem("eventDetails", JSON.stringify(formData));
+    const cleanedData = {
+      ...formData,
+    };
+
+    console.log("Submitting cleaned data:", cleanedData);
+
+    const response = await axios.post(`${API_URL}/event`, cleanedData);
+
+    localStorage.setItem("eventDetails", JSON.stringify(cleanedData));
     setSnackbarColor('success');
     setSnackbarMessage("Your basic details have been submitted!");
     setOpenSnackbar(true);
-    
-  setTimeout(() => {
-    setSubmitted(true);
-  }, 2000);
+
+    setTimeout(() => {
+      setSubmitted(true);
+    }, 2000);
   } catch (error) {
     console.error("Error saving event form data:", error);
-  } 
-};  
+    setSnackbarColor('error');
+    setSnackbarMessage("Submission failed. Please check your inputs.");
+    setOpenSnackbar(true);
+  }
+};
+
 
 const handleRemove = (index) => {
   const updated = [...members];
