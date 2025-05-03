@@ -1,118 +1,36 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
-  DialogTitle,
   DialogContent,
   DialogActions,
   Button,
-  TextField,
+  Typography,
   Grid,
-  MenuItem,
+  TextField,
   FormControl,
   InputLabel,
   Select,
-  Typography,
-} from "@mui/material";
+  MenuItem,
+} from '@mui/material';
 
-export default function AddMemberModal({
-  open,
-  onClose,
-  members,
-  setMembers,
-  maxMembers,
-}) {
-  const [memberData, setMemberData] = React.useState({
-    name: "",
-    gender: "",
-    dob: "",
-    idType: "",
-    idNumber: "",
-    mobile: "",
-  });
+const EditMemberDialog = ({ open, onClose, memberData, updateMember, error, maxMembers, members }) => {
+  const [editFormData, setEditFormData] = useState({ ...memberData });
 
-  const [error, setError] = React.useState({
-    name: "",
-    idNumber: "",
-    mobile: "",
-    gender: "",
-    dob: "",
-    idType: "",
-  });
+  useEffect(() => {
+    setEditFormData({ ...memberData });
+  }, [memberData]);
 
-  const MIN_AGE = 5;
-  // Validate input to ensure no special characters (only letters, numbers, and spaces)
-  const validateInput = (name: string, value: string) => {
-    const regex = /^[A-Za-z0-9 ]*$/; // Allows only letters, numbers, and spaces
-    if (name === "name" || name === "idNumber" || name === "mobile") {
-      if (!regex.test(value)) {
-        return `${name.charAt(0).toUpperCase() + name.slice(1)} contains invalid characters.`;
-      }
-    }
-
-    if (name === "mobile" && value.length !== 10) {
-      return "Mobile number must be 10 digits long.";
-    }
-
-    if (name === "mobile" && !/^[0-9]*$/.test(value)) {
-      return "Mobile number must contain only numbers.";
-    }
-
-     // Minimum age validation
-    if (name === "dob" && value) {
-      const dob = new Date(value);
-      const age = calculateAge(dob);
-      if (age < MIN_AGE) {
-        return `Age must be at least ${MIN_AGE} years.`;
-      }
-    }
-
-    return "";
-  };
-  const calculateAge = (dob) => {
-    const today = new Date();
-    const birthDate = new Date(dob);
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const m = today.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-    return age;
-  };
   const handleChange = (e) => {
     const { name, value } = e.target;
-    const validationError = validateInput(name, value);
-    setError((prev) => ({ ...prev, [name]: validationError }));
-    setMemberData((prev) => ({ ...prev, [name]: value }));
+    setEditFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
-  const handleAdd = () => {
-    // Check if all required fields are filled out and valid
-    let formValid = true;
-    const newError = { ...error };
-
-    // Check if any field is empty or invalid
-    Object.keys(memberData).forEach((key) => {
-      if (!memberData[key]) {
-        newError[key] = `${key.charAt(0).toUpperCase() + key.slice(1)} is required.`;
-        formValid = false;
-      }
-    });
-
-    setError(newError);
-
-    // If form is invalid, don't add member
-    if (!formValid || members.length >= maxMembers) return;
-
-    setMembers([...members, memberData]);
-    setMemberData({
-      name: "",
-      gender: "",
-      dob: "",
-      idType: "",
-      idNumber: "",
-      mobile: "",
-    });
-    onClose();
+  const handleSave = () => {
+    updateMember(editFormData);  // Save updated member data
+    onClose();  // Close dialog
   };
 
   return (
@@ -124,7 +42,7 @@ export default function AddMemberModal({
           gutterBottom
           sx={{ color: "#3b0083" }}
         >
-          Add Member
+          Edit Member
         </Typography>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
@@ -133,7 +51,7 @@ export default function AddMemberModal({
               label="Member Name"
               fullWidth
               size="small"
-              value={memberData.name}
+              value={editFormData.name}
               onChange={handleChange}
               variant="outlined"
               required
@@ -147,7 +65,7 @@ export default function AddMemberModal({
               <InputLabel>Gender</InputLabel>
               <Select
                 name="gender"
-                value={memberData.gender}
+                value={editFormData.gender}
                 onChange={handleChange}
                 label="Gender"
                 required
@@ -167,7 +85,7 @@ export default function AddMemberModal({
               size="small"
               type="date"
               required
-              value={memberData.dob}
+              value={editFormData.dob}
               onChange={handleChange}
               InputLabelProps={{
                 shrink: true,
@@ -182,7 +100,7 @@ export default function AddMemberModal({
               <InputLabel>ID Type</InputLabel>
               <Select
                 name="idType"
-                value={memberData.idType}
+                value={editFormData.idType}
                 onChange={handleChange}
                 label="ID Type"
                 required
@@ -200,7 +118,7 @@ export default function AddMemberModal({
               label="ID Number"
               fullWidth
               size="small"
-              value={memberData.idNumber}
+              value={editFormData.idNumber}
               onChange={handleChange}
               required
               error={!!error.idNumber}
@@ -214,7 +132,7 @@ export default function AddMemberModal({
               label="Mobile Number"
               fullWidth
               size="small"
-              value={memberData.mobile}
+              value={editFormData.mobile}
               onChange={handleChange}
               type="tel"
               required
@@ -237,14 +155,16 @@ export default function AddMemberModal({
           Cancel
         </Button>
         <Button
-          onClick={handleAdd}
+          onClick={handleSave}
           variant="contained"
           color="primary"
           disabled={members.length >= maxMembers || Object.values(error).some((err) => err)}
         >
-          Add Member
+          Save Changes
         </Button>
       </DialogActions>
     </Dialog>
   );
-}
+};
+
+export default EditMemberDialog;

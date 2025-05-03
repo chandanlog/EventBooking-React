@@ -24,7 +24,7 @@ const drawerWidth = 220;
 const menuItems = [
   { text: "Event Details", icon: <EventIcon /> },
   { text: "Upload Document", icon: <UploadFileIcon /> },
-  { text: "Preview & Submit", icon: <PreviewIcon /> },
+  { text: "Review & Submit", icon: <PreviewIcon /> },
   { text: "Get Ticket", icon: <BookOnlineIcon /> },
 ];
 
@@ -69,11 +69,11 @@ export default function EventDashboard() {
           <UploadDocument
             onUploadSuccess={() => {
               setDocumentUploaded(true);
-              setSelectedTab("Preview & Submit");
+              setSelectedTab("Review & Submit");
             }}
           />
         );
-      case "Preview & Submit":
+      case "Review & Submit":
         return (
           <PreviewAndSubmit
           onUreviewSubmit={() => {

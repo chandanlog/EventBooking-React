@@ -62,16 +62,27 @@ const ApproveTicket = () => {
     fetchEvents();
   }, []);
 
-  const getFileUrl = (file) => {
-    if (!file || !file.data) return null;
+  const getFileUrl = (file, name = "document") => {
+    if (!file || !file.data) return { url: null, filename: null };
+  
     const byteArray = new Uint8Array(file.data);
+  
     const signature = byteArray.slice(0, 4).join(" ");
-    let mimeType = "application/pdf";
+    let mimeType = "application/octet-stream"; // fallback
+  
     if (signature.startsWith("255 216")) mimeType = "image/jpeg";
     else if (signature.startsWith("137 80 78 71")) mimeType = "image/png";
+    else if (signature.startsWith("208 207 17 224")) mimeType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+    else if (signature.startsWith("37 80 68 70")) mimeType = "application/pdf";
+    else if (signature.startsWith("80 75 3 4")) mimeType = "application/zip";
+  
+    const extension = mimeType.split("/").pop(); // e.g., 'pdf', 'jpeg'
+    const filename = `${name}.${extension}`;
     const blob = new Blob([byteArray], { type: mimeType });
-    return URL.createObjectURL(blob);
-  };
+    const url = URL.createObjectURL(blob);
+  
+    return { url, filename };
+  };  
 
   const handleApproval = async (id, eventId, eventName, userEmail, status) => {
     try {
@@ -200,14 +211,50 @@ const ApproveTicket = () => {
                 <TableCell>{b.userEmail}</TableCell>
                 <TableCell>{b.phone}</TableCell>
                 <TableCell>
-                  <a href={getFileUrl(b.idProof)} target="_blank" rel="noreferrer">
-                    View
-                  </a>
+                  {b.idProof && b.idProof.data ? (
+                    (() => {
+                      const { url, filename } = getFileUrl(b.idProof, "idProof");
+                      return url ? (
+                        <a href={url} download={filename} target="_blank" rel="noreferrer" style={{
+                          textDecoration: "none",
+                          backgroundColor: "#3b0083",
+                          color: "#fff",
+                          padding: "4px 12px",
+                          borderRadius: "4px",
+                          fontSize: "0.875rem",
+                        }}>
+                          View
+                        </a>
+                      ) : (
+                        "NA"
+                      );
+                    })()
+                  ) : (
+                    "NA"
+                  )}
                 </TableCell>
                 <TableCell>
-                  <a href={getFileUrl(b.reqLetter)} target="_blank" rel="noreferrer">
-                    View
-                  </a>
+                  {b.orgRequestLetter && b.orgRequestLetter.data ? (
+                    (() => {
+                      const { url, filename } = getFileUrl(b.orgRequestLetter, "requestLetter");
+                      return url ? (
+                        <a href={url} download={filename} target="_blank" rel="noreferrer" style={{
+                          textDecoration: "none",
+                          backgroundColor: "#3b0083",
+                          color: "#fff",
+                          padding: "4px 12px",
+                          borderRadius: "4px",
+                          fontSize: "0.875rem",
+                        }}>
+                          View
+                        </a>
+                      ) : (
+                        "NA"
+                      );
+                    })()
+                  ) : (
+                    "NA"
+                  )}
                 </TableCell>
                 <TableCell
                   sx={{
