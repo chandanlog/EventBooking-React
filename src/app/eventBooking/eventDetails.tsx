@@ -25,6 +25,10 @@ import {
   Stepper,
   Step,
   StepLabel,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import axios from "axios";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -33,6 +37,7 @@ import AddMemberModal from "./AddMemberModal";
 import { Snackbar, Alert } from '@mui/material';
 import Link from "next/link";
 import { useRouter } from 'next/router';
+import EditMemberDialog from "./EditMemberDialog";
 
 
 const theme = createTheme({
@@ -74,7 +79,9 @@ const [members, setMembers] = useState([]);
 const [submissionSuccess, setSubmissionSuccess] = useState(false);
 const [snackbarMessage, setSnackbarMessage] = useState("");
 const [snackbarColor, setSnackbarColor] = useState<"success" | "error" | "warning" | "info">("success"); // explicitly typing snackbarColor
-
+const [openDialog, setOpenDialog] = useState(false);
+const [selectedMember, setSelectedMember] = useState(null);
+const [error, setError] = useState({});
 useEffect(() => {
   const eventsData = localStorage.getItem("events");
   setEvents(JSON.parse(eventsData))
@@ -180,6 +187,19 @@ const handleRemove = (index) => {
   updated.splice(index, 1);
   setMembers(updated);
 };
+  const handleEditClick = (member) => {
+    setSelectedMember(member);
+    setOpenDialog(true);
+  };
+
+  const updateMember = (updatedMember) => {
+    setMembers((prevMembers) =>
+      prevMembers.map((member) =>
+        member.id === selectedMember.id ? { ...member, ...updatedMember } : member
+      )
+    );
+  };
+
 const handleOpenModal = () => setOpenModal(true);
 const handleCloseModal = () => setOpenModal(false);
 const handleSubmitAllMembers = async () => {
@@ -562,10 +582,11 @@ const handleSubmitAllMembers = async () => {
                         mr: 1,
                         "&:hover": { color: "#01579b" },
                       }}
-                      onClick={() => alert("Edit functionality coming soon!")}
+                      onClick={() => handleEditClick(member)}
                     >
                       <EditIcon fontSize="small" />
-                    </IconButton>
+                    </IconButton> 
+                  
                     <IconButton
                       size="small"
                       sx={{
@@ -581,6 +602,17 @@ const handleSubmitAllMembers = async () => {
               ))}
             </TableBody>
           </Table>
+          {selectedMember && (
+        <EditMemberDialog
+          open={openDialog}
+          onClose={() => setOpenDialog(false)}
+          memberData={selectedMember}
+          updateMember={updateMember}
+          error={error}
+          maxMembers={10}
+          members={members}
+        />
+      )}
         </TableContainer>
       </CardContent>
     </Card>
