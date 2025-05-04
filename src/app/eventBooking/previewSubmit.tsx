@@ -33,6 +33,7 @@ const PreviewAndSubmit = ({ onUreviewSubmit }) => {
   const [activeStep, setActiveStep] = useState(2);
   const [eventData, setEventData] = useState(null);
   const [userType, setUserType] = useState(null);
+  const [organizationName, setOrganizationName] = useState(null);
   const [seatsBooked, setSeatsBooked] = useState(null);
   const [qrCode, setQrCode] = useState("");
   const [members, setMembers] = useState([]);
@@ -44,12 +45,14 @@ const PreviewAndSubmit = ({ onUreviewSubmit }) => {
     const storedEvents = localStorage.getItem("events");
     const storedEventId = localStorage.getItem("eventId");
     const storedUserType = localStorage.getItem("userType");
+    const storedOrganizationName = localStorage.getItem("organizationName");
     const storedNumSeats = localStorage.getItem("numSeats");
     const storedMembers = localStorage.getItem("members");
 
     setEmail(email);
     setEventId(storedEventId);
     if (storedUserType) setUserType(storedUserType);
+    if (storedOrganizationName) setOrganizationName(storedOrganizationName);
     if (storedNumSeats) setSeatsBooked(storedNumSeats);
     if (storedMembers) setMembers(JSON.parse(storedMembers));
 
@@ -64,6 +67,7 @@ const PreviewAndSubmit = ({ onUreviewSubmit }) => {
           ...selectedEvent,
           userType: storedUserType,
           seatsBooked: storedNumSeats,
+          organizationName: storedOrganizationName,
         });
       }
     }
@@ -75,11 +79,11 @@ const PreviewAndSubmit = ({ onUreviewSubmit }) => {
     const formDataString = `
 🎫 EventHub Ticket Preview
 ========================
-Event       : ${eventData.title}
-Date        : ${eventData.date}
-Location    : ${eventData.location}
-User Type   : ${eventData.userType}
-Seats Booked: ${eventData.seatsBooked}
+Event        : ${eventData.title}
+Date         : ${eventData.date}
+Location     : ${eventData.location}
+${eventData.userType === "individual" ? "👤 Individual" : "🏢 Organization : "} ${eventData.userType === "organization" ? `${eventData.organizationName}` : ""}
+Seats Booked : ${eventData.seatsBooked}
 
 👥 Members List:
 ${members.map((m, i) => 
@@ -189,9 +193,11 @@ Mobile   : ${m.mobile}`
                   <Typography variant="body1" sx={{ color: "#4a148c" }}>
                     <strong>Location:</strong> {eventData.location}
                   </Typography>
+                  {eventData.userType === "organization" && (
                   <Typography variant="body1" sx={{ color: "#4a148c" }}>
-                    <strong>Organizer:</strong> EventHub
+                    <strong>Organization Name:</strong> {eventData.organizationName}
                   </Typography>
+                )}
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <Typography variant="body1" sx={{ color: "#4a148c" }}>

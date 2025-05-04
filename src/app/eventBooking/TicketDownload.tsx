@@ -25,6 +25,7 @@ interface Member {
 
 interface EventData {
   eventId: number;
+  organizationName: string,
   eventName: string;
   eventDate: string;
   time: string;
@@ -62,6 +63,7 @@ const TicketDownload: React.FC = () => {
           if (!grouped[ticketKey]) {
             grouped[ticketKey] = {
               eventId: item.eventId || "0",
+              organizationName: item.organizationName,
               eventName: item.eventName,
               eventDate: item.eventDate,
               time: item.time || "18:00",
@@ -95,7 +97,7 @@ Ticket No   : ${event.ticketNo}
 Event       : ${event.eventName}
 Date        : ${event.eventDate}
 Location    : ${event.eventLoaction}
-User Type   : ${event.members[0]?.userType || "N/A"}
+${event.members[0]?.userType === "individual" ? "👤 Individual" : "🏢 Organization : "} ${event.members[0]?.userType === "organization" ? `${event.organizationName}` : ""}
 Seats Booked: ${event.members.length}
 
 👥 Members List:
@@ -282,51 +284,53 @@ Mobile     : ${m.mobile}`
           </Box>
         ) : (
           <>
-            <Box sx={{ flex: 3, p: 4 }}>
-              <Typography variant="h5" fontWeight={700} color="#4a148c">
-                {event.eventName}
-              </Typography>
-              <Typography variant="body1" mt={1}>
-                📅 {event.eventDate} | 🕒 {event.time}
-              </Typography>
-              <Typography variant="body1">📍 {event.eventLoaction}</Typography>
-              <Typography variant="body2" mt={1}>
-                🎟 Ticket No: {event.ticketNo} | {event.members[0]?.userType === "individual" ? "👤 Booking Type : Individual" : "🏢 Booking Type : Organization"}
-              </Typography>
-              <Divider sx={{ my: 2 }} />
-              <Typography fontWeight={600} mb={1} color="#4a148c">
-                Members:
-              </Typography>
-              <Box sx={{ overflowX: "auto" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                  <thead>
-                    <tr style={{ backgroundColor: "#ce93d8", color: "white" }}>
-                      <th style={{ padding: "5px", textAlign: "left" }}>Name</th>
-                      <th style={{ padding: "5px", textAlign: "left" }}>Gender</th>
-                      <th style={{ padding: "5px", textAlign: "left" }}>Age</th>
-                      <th style={{ padding: "5px", textAlign: "left" }}>Id Type</th>
-                      <th style={{ padding: "5px", textAlign: "left" }}>Id No</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {event.members.map((member, index) => (
-                      <tr
-                        key={member.idNumber}
-                        style={{
-                          backgroundColor: index % 2 === 0 ? "#f3e5f5" : "#ffffff",
-                        }}
-                      >
-                        <td style={{ padding: "5px" }}>{member.name}</td>
-                        <td style={{ padding: "5px" }}>{member.gender}</td>
-                        <td style={{ padding: "5px" }}>{calculateAge(member.dob)}</td>
-                        <td style={{ padding: "5px" }}>{member.idType}</td>
-                        <td style={{ padding: "5px" }}>{member.idNumber}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </Box>
-            </Box>
+           <Box sx={{ flex: 3, p: 4 }}>
+  <Typography variant="h5" fontWeight={700} color="#4a148c">
+    {event.eventName}
+  </Typography>
+  <Typography variant="body1" mt={1}>
+    📅 {event.eventDate} | 🕒 {event.time}
+  </Typography>
+  <Typography variant="body1">📍 {event.eventLoaction} | {event.members[0]?.userType === "individual" ? "👤 Individual" : "🏢 Organization : "} {event.members[0]?.userType === "organization" ? `${event.organizationName}` : ""}</Typography>
+  <Typography variant="body2" mt={1}>
+  🎟 Ticket No: {event.ticketNo}
+  </Typography>
+  <Divider sx={{ my: 2 }} />
+  <Typography fontWeight={600} mb={1} color="#4a148c">
+    Members:
+  </Typography>
+  
+  <Box sx={{ overflowX: "auto", maxWidth: "100%" }}>
+    <table style={{ width: "100%", borderCollapse: "collapse" }}>
+      <thead>
+        <tr style={{ backgroundColor: "#ce93d8", color: "white" }}>
+          <th style={{ padding: "5px", textAlign: "left" }}>Name</th>
+          <th style={{ padding: "5px", textAlign: "left" }}>Gender</th>
+          <th style={{ padding: "5px", textAlign: "left" }}>Age</th>
+          <th style={{ padding: "5px", textAlign: "left" }}>Id Type</th>
+          <th style={{ padding: "5px", textAlign: "left" }}>Id No</th>
+        </tr>
+      </thead>
+      <tbody>
+        {event.members.map((member, index) => (
+          <tr
+            key={member.idNumber}
+            style={{
+              backgroundColor: index % 2 === 0 ? "#f3e5f5" : "#ffffff",
+            }}
+          >
+            <td style={{ padding: "5px" }}>{member.name}</td>
+            <td style={{ padding: "5px" }}>{member.gender}</td>
+            <td style={{ padding: "5px" }}>{calculateAge(member.dob)}</td>
+            <td style={{ padding: "5px" }}>{member.idType}</td>
+            <td style={{ padding: "5px" }}>{member.idNumber}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </Box>
+</Box>
+
             <Box
               sx={{
                 flex: 1,

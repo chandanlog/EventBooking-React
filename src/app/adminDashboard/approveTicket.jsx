@@ -195,9 +195,9 @@ const ApproveTicket = () => {
         <Table size="small">
           <TableHead sx={{ bgcolor: "#3b0083" , color:"white"}} >
             <TableRow>
-              <TableCell sx={{ color: 'white' }}>Name</TableCell>
+              <TableCell sx={{ color: 'white' }}>Organization Name</TableCell>
               <TableCell sx={{ color: 'white' }}>Email</TableCell>
-              <TableCell sx={{ color: 'white' }}>Phone</TableCell>
+              <TableCell sx={{ color: 'white' }}>No. Seats</TableCell>
               <TableCell sx={{ color: 'white' }}>ID Proof</TableCell>
               <TableCell sx={{ color: 'white' }}>Request Letter</TableCell>
               <TableCell sx={{ color: 'white' }}>Status</TableCell>
@@ -207,9 +207,9 @@ const ApproveTicket = () => {
           <TableBody>
             {paginatedBookings.map((b) => (
               <TableRow key={b.id}>
-                <TableCell>{b.name}</TableCell>
+                <TableCell>{b.organizationName}</TableCell>
                 <TableCell>{b.userEmail}</TableCell>
-                <TableCell>{b.phone}</TableCell>
+                <TableCell>{b.numSeats}</TableCell>
                 <TableCell>
                   {b.idProof && b.idProof.data ? (
                     (() => {
