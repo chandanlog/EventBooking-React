@@ -29,10 +29,13 @@ const Header = () => {
 
   const pathname = usePathname();
 
-  const isAdminPage = pathname === '/admin';
-  const buttonLabel = isAdminPage ? 'Home' : 'Admin';
-  const targetHref = isAdminPage ? '/' : '/admin';
-
+  // const isAdminPage = pathname === '/admin';
+  // const buttonLabel = isAdminPage ? 'Home' : 'Admin';
+  // const targetHref = isAdminPage ? '/' : '/admin';
+  const isAdminOrAuthPage = pathname === '/admin' || pathname === '/login' || pathname === '/register';
+  const buttonLabel = isAdminOrAuthPage ? 'Home' : 'Admin';
+  const targetHref = isAdminOrAuthPage ? '/' : '/admin';
+  
   return (
     <AppBar position="static" sx={{ bgcolor: "#0c0c0c", px: 2 }}>
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>

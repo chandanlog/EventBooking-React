@@ -62,6 +62,7 @@ export default function EventDetails({ onSubmitSuccess }: EventDetailsProps) {
     numSeats: 1,
     modeOfTravel: "",
     vehicleDetails: "",
+    organizationName: "",
     addressLine: "",
     state: "",
     district: "",
@@ -77,6 +78,7 @@ const [submitted, setSubmitted] = useState(false);
 const [openModal, setOpenModal] = useState(false);
 const [members, setMembers] = useState([]);
 const [submissionSuccess, setSubmissionSuccess] = useState(false);
+const [submissionSuccessMembers, setSubmissionSuccessMembers] = useState(false);
 const [snackbarMessage, setSnackbarMessage] = useState("");
 const [snackbarColor, setSnackbarColor] = useState<"success" | "error" | "warning" | "info">("success"); // explicitly typing snackbarColor
 const [openDialog, setOpenDialog] = useState(false);
@@ -159,6 +161,7 @@ const handleSubmit = async (e) => {
 
     localStorage.setItem("eventDetails", JSON.stringify(cleanedData));
     setSnackbarColor('success');
+    setSubmissionSuccess(true);
     setSnackbarMessage("Your basic details have been submitted!");
     setOpenSnackbar(true);
 
@@ -209,8 +212,10 @@ const handleSubmitAllMembers = async () => {
       members: members,
       userEmail: formData.userEmail,
       userType: formData.userType,
+      organizationName: formData.organizationName,
     });
     localStorage.setItem("userType",formData.userType);
+    localStorage.setItem("organizationName",formData.organizationName);
     localStorage.setItem("eventId",formData.eventId);
     localStorage.setItem("numSeats",String(formData.numSeats));
     localStorage.setItem("members",JSON.stringify(members));
@@ -218,7 +223,7 @@ const handleSubmitAllMembers = async () => {
     setSnackbarColor('success');
     setSnackbarMessage("All members submitted successfully!");
     setOpenSnackbar(true);
-    setSubmissionSuccess(true);
+    setSubmissionSuccessMembers(true);
     setTimeout(() => {
       onSubmitSuccess();
     }, 2000);
@@ -279,6 +284,7 @@ const handleSubmitAllMembers = async () => {
                       onChange={handleChange}
                       label="Event Name"
                       required
+                      disabled={submissionSuccess}
                     >
                       {events.map((event, index) => (
                         <MenuItem key={index} value={event.title}>
@@ -329,6 +335,7 @@ const handleSubmitAllMembers = async () => {
                       onChange={handleChange}
                       label="User Type"
                       required
+                      disabled={submissionSuccess}
                     >
                       <MenuItem value="individual">Individual</MenuItem>
                       <MenuItem value="organization">Organization</MenuItem>
@@ -345,7 +352,7 @@ const handleSubmitAllMembers = async () => {
                       value={formData.numSeats}
                       onChange={handleChange}
                       label="Number of Seats"
-                      disabled={formData.userType === "individual"}
+                      disabled={formData.userType === "individual" || submissionSuccess}
                       required
                     >
                       {[1, 2, 3, 5, 10, 20, 50].map((num) => (
@@ -373,7 +380,7 @@ const handleSubmitAllMembers = async () => {
                 </Grid>
 
                 {/* Organization Only Fields */}
-                {formData.userType === "organization" && (
+                {/* {formData.userType === "organization" && (
                   <>
                     <Grid item xs={12} sm={6} sx={{ textAlign: "left" }}>
                       <TextField
@@ -398,9 +405,57 @@ const handleSubmitAllMembers = async () => {
                       />
                     </Grid>
                   </>
-                )}
- {/* ID Proof */}
- <Grid item xs={12} sm={6} sx={{ textAlign: "left" }}>
+                )} */}
+                {formData.userType === "organization" && (
+                <>
+                  <Grid item xs={12} sm={6} sx={{ textAlign: "left" }}>
+                    <TextField
+                      label="Organization Name"
+                      name="organizationName"
+                      value={formData.organizationName}
+                      onChange={handleChange}
+                      fullWidth
+                      required
+                      size="small"
+                      disabled={submissionSuccess}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={3} sx={{ textAlign: "left" }}>
+                    <FormControl fullWidth size="small" required>
+                      <InputLabel id="mode-of-travel-label">Mode of Travel</InputLabel>
+                      <Select
+                        labelId="mode-of-travel-label"
+                        id="modeOfTravel"
+                        name="modeOfTravel"
+                        value={formData.modeOfTravel}
+                        label="Mode of Travel"
+                        onChange={handleChange}
+                        disabled={submissionSuccess}
+                      >
+                        <MenuItem value="bus">Bus</MenuItem>
+                        <MenuItem value="train">Train</MenuItem>
+                        <MenuItem value="own vehicle">Own Vehicle</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+
+                  <Grid item xs={12} sm={3} sx={{ textAlign: "left" }}>
+                    <TextField
+                      label="Vehicle Details"
+                      name="vehicleDetails"
+                      value={formData.vehicleDetails}
+                      onChange={handleChange}
+                      fullWidth
+                      required
+                      disabled={submissionSuccess}
+                      size="small"
+                    />
+                  </Grid>
+                </>
+              )}
+
+              {/* ID Proof */}
+              <Grid item xs={12} sm={6} sx={{ textAlign: "left" }}>
                   <FormControl fullWidth size="small">
                     <InputLabel>ID Proof</InputLabel>
                     <Select
@@ -409,6 +464,7 @@ const handleSubmitAllMembers = async () => {
                       onChange={handleChange}
                       label="ID Proof"
                       required
+                      disabled={submissionSuccess}
                     >
                       <MenuItem value="passport">Passport</MenuItem>
                       <MenuItem value="aadhaar">Aadhaar</MenuItem>
@@ -427,6 +483,7 @@ const handleSubmitAllMembers = async () => {
                     required
                     size="small"
                     type="text"
+                    disabled={submissionSuccess}
                   />
                 </Grid>
                 {/* Address Fields */}
@@ -441,6 +498,7 @@ const handleSubmitAllMembers = async () => {
                     multiline
                     rows={2}
                     size="small"
+                    disabled={submissionSuccess}
                   />
                 </Grid>
 
@@ -453,6 +511,7 @@ const handleSubmitAllMembers = async () => {
                     fullWidth
                     required
                     size="small"
+                    disabled={submissionSuccess}
                   />
                 </Grid>
 
@@ -465,6 +524,7 @@ const handleSubmitAllMembers = async () => {
                     fullWidth
                     required
                     size="small"
+                    disabled={submissionSuccess}
                   />
                 </Grid>
 
@@ -478,13 +538,14 @@ const handleSubmitAllMembers = async () => {
                     required
                     type="number"
                     size="small"
+                    disabled={submissionSuccess}
                   />
                 </Grid>
 
                 <Grid item xs={12} sm={6} sx={{ textAlign: "left" }}>
                   <FormControl fullWidth size="small">
                     <InputLabel>Country</InputLabel>
-                    <Select name="country" value={formData.country} disabled label="Country">
+                    <Select name="country" value={formData.country} label="Country" disabled={submissionSuccess}>
                       <MenuItem value="India">India</MenuItem>
                     </Select>
                   </FormControl>
@@ -493,34 +554,34 @@ const handleSubmitAllMembers = async () => {
                
                 <Grid item xs={12} sx={{ display: "flex", justifyContent: "flex-end" }}>
                 {!submitted ? (
-        <Button
-          type="submit"
-          variant="contained"
-          size="large"
-        >
-          Next
-        </Button>
-      ) : (
-        <Button
-          variant="contained"
-          size="large"
-          onClick={handleOpenModal}
-          disabled={members.length >= formData.numSeats}
-        >
-          Add Member ({members.length}/{formData.numSeats})
-        </Button>
-      )}
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    size="large"
+                  >
+                    Next
+                  </Button>
+                ) : (
+                  <Button
+                    variant="contained"
+                    size="large"
+                    onClick={handleOpenModal}
+                    disabled={members.length >= formData.numSeats}
+                  >
+                    Add Member ({members.length}/{formData.numSeats})
+                  </Button>
+                )}
 
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={3000}
-        onClose={() => setOpenSnackbar(false)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        <Alert onClose={() => setOpenSnackbar(false)}  severity={snackbarColor} variant="filled" sx={{ width: "100%" }}>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
+              <Snackbar
+                open={openSnackbar}
+                autoHideDuration={3000}
+                onClose={() => setOpenSnackbar(false)}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+              >
+                <Alert onClose={() => setOpenSnackbar(false)}  severity={snackbarColor} variant="filled" sx={{ width: "100%" }}>
+                  {snackbarMessage}
+                </Alert>
+              </Snackbar>
       
 </Grid>
               </Grid>
@@ -620,7 +681,7 @@ const handleSubmitAllMembers = async () => {
 
 {members.length === formData.numSeats && (
         <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3, gap: 2 }}>
-          {!submissionSuccess ? (
+          {!submissionSuccessMembers ? (
             <Button
               variant="contained"
               color="primary"

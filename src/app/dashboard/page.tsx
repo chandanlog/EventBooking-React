@@ -25,7 +25,7 @@ const menuItems = [
   { text: "Event Details", icon: <EventIcon /> },
   { text: "Upload Document", icon: <UploadFileIcon /> },
   { text: "Review & Submit", icon: <PreviewIcon /> },
-  { text: "Get Ticket", icon: <BookOnlineIcon /> },
+  { text: "View Booking", icon: <BookOnlineIcon /> },
 ];
 
 export default function EventDashboard() {
@@ -50,7 +50,7 @@ export default function EventDashboard() {
     sessionStorage.removeItem("token");
     localStorage.clear();
     sessionStorage.clear();
-    router.push("/");
+    router.push("/login");
   };
 
   const renderContent = () => {
@@ -77,11 +77,11 @@ export default function EventDashboard() {
         return (
           <PreviewAndSubmit
           onUreviewSubmit={() => {
-              setSelectedTab("Get Ticket");
+              setSelectedTab("View Booking");
             }}
           />
         );
-      case "Get Ticket":
+      case "View Booking":
         return <TicketDownload />;
       default:
         return <Typography>No content found.</Typography>;
@@ -92,7 +92,7 @@ export default function EventDashboard() {
     <List>
       {menuItems.map(({ text, icon }) => {
         const isDisabled =
-        (!eventSubmitted && text !== "Event Details" && !eventSubmitted && text !== "Get Ticket") || // Step 1: Before submission, only Event Details is enabled
+        (!eventSubmitted && text !== "Event Details" && !eventSubmitted && text !== "View Booking") || // Step 1: Before submission, only Event Details is enabled
         (eventSubmitted && !documentUploaded && text === "Review & Submit") || // Step 2: After event submitted, disable Review until document is uploaded
         (eventSubmitted && !documentUploaded && text !== "Event Details" && text !== "Upload Document"); // Step 3: Block all tabs except Event Details and Upload Doc
 
