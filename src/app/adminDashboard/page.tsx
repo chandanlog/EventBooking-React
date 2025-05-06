@@ -11,13 +11,16 @@ import CloseIcon from "@mui/icons-material/Close";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import LogoutIcon from "@mui/icons-material/Logout";
+import SummarizeIcon from '@mui/icons-material/Summarize';
 import ApproveTicket from './approveTicket'
 import AddEvent from "./addEvent";
+import ReportDashboardPage from "./reportCard";
 const drawerWidth = 220;
 
 const menuItems = [
   { text: "Approve Ticket", icon: <HowToRegIcon /> },
   { text: "Add Event", icon: <EventAvailableIcon /> },
+  { text: "Event Report", icon: <SummarizeIcon /> },
 ];
 
 export default function EventDashboard() {
@@ -93,7 +96,7 @@ export default function EventDashboard() {
                 color: "red",
               }}
             >
-              <LogoutIcon />
+            <LogoutIcon />
             </ListItemIcon>
             {(hovered || isMobile) && (
               <Typography fontSize={14} color="red">
@@ -115,6 +118,10 @@ export default function EventDashboard() {
       case "Add Event":
         return (
           <AddEvent />
+        )
+      case "Event Report":
+        return (
+          <ReportDashboardPage />
         )
       default:
         return <Typography>No content found.</Typography>;
