@@ -119,7 +119,6 @@ Mobile   : ${m.mobile}`
     formData.append("userType",userType);
     try {
       const response = await axios.post(`${API_URL}/event/finalSubmit`, formData);
-      console.log("Event form data saved successfully:", response.data);
       setSuccessMessage(true);
       setTimeout(() => {
         onUreviewSubmit();

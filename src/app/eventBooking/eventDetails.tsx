@@ -84,9 +84,19 @@ const [snackbarColor, setSnackbarColor] = useState<"success" | "error" | "warnin
 const [openDialog, setOpenDialog] = useState(false);
 const [selectedMember, setSelectedMember] = useState(null);
 const [error, setError] = useState({});
+const [stateList, setStateList] = useState([]);
+const [districtList, setDistrictList] = useState([]);
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 useEffect(() => {
   const eventsData = localStorage.getItem("events");
-  setEvents(JSON.parse(eventsData))
+  const savedDistrictList = localStorage.getItem("districtList");
+
+  if(eventsData){
+    setEvents(JSON.parse(eventsData));
+  }
+  if (savedDistrictList) {
+    setDistrictList(JSON.parse(savedDistrictList));
+  }
 },[])
 
   // Validation: Only allow alphanumeric and spaces
@@ -146,8 +156,38 @@ useEffect(() => {
     }
   }, []);
 
+  // Fetch all states on component mount
+  useEffect(() => {
+    const fetchStates = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/admin/location/states`);
+        setStateList(response.data);
+      } catch (error) {
+        console.error("Error fetching states:", error);
+      }
+    };
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+    fetchStates();
+  }, []);
+
+  // Fetch districts when state changes
+ const handleStateChange = async (event: any) => {
+    const selectedStateName = event.target.value;
+    setFormData({ ...formData, state: selectedStateName, district: "" });
+
+    try {
+      const res = await axios.get(
+        `${API_URL}/admin/location/districts/${selectedStateName}`
+      );
+      setDistrictList(res.data);
+    } catch (err) {
+      console.error("Error fetching districts:", err);
+    }
+  };
+
+  const handleDistrictChange = (event: any) => {
+    setFormData({ ...formData, district: event.target.value });
+  };
 const handleSubmit = async (e) => {
   e.preventDefault();
   try {
@@ -155,11 +195,10 @@ const handleSubmit = async (e) => {
       ...formData,
     };
 
-    console.log("Submitting cleaned data:", cleanedData);
-
     const response = await axios.post(`${API_URL}/event`, cleanedData);
 
     localStorage.setItem("eventDetails", JSON.stringify(cleanedData));
+    localStorage.setItem("districtList", JSON.stringify(districtList));
     setSnackbarColor('success');
     setSubmissionSuccess(true);
     setSnackbarMessage("Your basic details have been submitted!");
@@ -378,34 +417,6 @@ const handleSubmitAllMembers = async () => {
                     disabled
                   />
                 </Grid>
-
-                {/* Organization Only Fields */}
-                {/* {formData.userType === "organization" && (
-                  <>
-                    <Grid item xs={12} sm={6} sx={{ textAlign: "left" }}>
-                      <TextField
-                        label="Mode of Travel"
-                        name="modeOfTravel"
-                        value={formData.modeOfTravel}
-                        onChange={handleChange}
-                        fullWidth
-                        required
-                        size="small"
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={6} sx={{ textAlign: "left" }}>
-                      <TextField
-                        label="Vehicle Details"
-                        name="vehicleDetails"
-                        value={formData.vehicleDetails}
-                        onChange={handleChange}
-                        fullWidth
-                        required
-                        size="small"
-                      />
-                    </Grid>
-                  </>
-                )} */}
                 {formData.userType === "organization" && (
                 <>
                   <Grid item xs={12} sm={6} sx={{ textAlign: "left" }}>
@@ -486,48 +497,51 @@ const handleSubmitAllMembers = async () => {
                     disabled={submissionSuccess}
                   />
                 </Grid>
-                {/* Address Fields */}
-                <Grid item xs={12} sx={{ textAlign: "left" }}>
-                  <TextField
-                    label="Address Line"
-                    name="addressLine"
-                    value={formData.addressLine}
-                    onChange={handleChange}
-                    fullWidth
-                    required
-                    multiline
-                    rows={2}
-                    size="small"
-                    disabled={submissionSuccess}
-                  />
-                </Grid>
-
                 <Grid item xs={12} sm={6} sx={{ textAlign: "left" }}>
-                  <TextField
+                  <FormControl fullWidth size="small">
+                    <InputLabel>Country</InputLabel>
+                    <Select name="country" value={formData.country} label="Country" disabled={submissionSuccess}>
+                      <MenuItem value="India">India</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} sm={6} sx={{ textAlign: "left" }}>
+                <FormControl fullWidth size="small" disabled={submissionSuccess}>
+                  <InputLabel>State</InputLabel>
+                  <Select
                     label="State"
                     name="state"
                     value={formData.state}
-                    onChange={handleChange}
-                    fullWidth
+                    onChange={handleStateChange}
                     required
-                    size="small"
-                    disabled={submissionSuccess}
-                  />
-                </Grid>
-
-                <Grid item xs={12} sm={6} sx={{ textAlign: "left" }}>
-                  <TextField
-                    label="District"
-                    name="district"
-                    value={formData.district}
-                    onChange={handleChange}
-                    fullWidth
-                    required
-                    size="small"
-                    disabled={submissionSuccess}
-                  />
-                </Grid>
-
+                  >
+                    {stateList.map((stateName) => (
+                    <MenuItem key={stateName} value={stateName}>
+                      {stateName}
+                    </MenuItem>
+                  ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6} sx={{ textAlign: "left" }}>
+                <FormControl fullWidth size="small" disabled={submissionSuccess}>
+                <InputLabel>District</InputLabel>
+                <Select
+                  label="District"
+                  name="district"
+                  value={formData.district}
+                  onChange={handleDistrictChange}
+                  required
+                  disabled={!formData.state || submissionSuccess}
+                >
+                  {districtList.map((district, index) => (
+                    <MenuItem key={index} value={district}>
+                      {district}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              </Grid>
                 <Grid item xs={12} sm={6} sx={{ textAlign: "left" }}>
                   <TextField
                     label="Pincode"
@@ -542,13 +556,21 @@ const handleSubmitAllMembers = async () => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={6} sx={{ textAlign: "left" }}>
-                  <FormControl fullWidth size="small">
-                    <InputLabel>Country</InputLabel>
-                    <Select name="country" value={formData.country} label="Country" disabled={submissionSuccess}>
-                      <MenuItem value="India">India</MenuItem>
-                    </Select>
-                  </FormControl>
+                
+                {/* Address Fields */}
+                <Grid item xs={12} sx={{ textAlign: "left" }}>
+                  <TextField
+                    label="Address Line"
+                    name="addressLine"
+                    value={formData.addressLine}
+                    onChange={handleChange}
+                    fullWidth
+                    required
+                    multiline
+                    rows={2}
+                    size="small"
+                    disabled={submissionSuccess}
+                  />
                 </Grid>
                 {/* Submit */}
                
