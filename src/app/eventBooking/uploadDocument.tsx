@@ -39,13 +39,11 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ onUploadSuccess }) => {
   useEffect(() => {
     const userTypeFromStorage = localStorage.getItem("userType");
     const userEmail = localStorage.getItem("email");
-    console.log("User Email: ", userEmail)
     const eventId = localStorage.getItem("eventId");
     if (userTypeFromStorage) {
       setUserType(userTypeFromStorage);
     }
     if (userEmail) {
-      console.log("Set User Email: ", userEmail)
       setUserEmail(userEmail);
     }
     if (eventId) {
@@ -97,13 +95,11 @@ const UploadDocument: React.FC<UploadDocumentProps> = ({ onUploadSuccess }) => {
     }
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
     try {
-      console.log("formData :",formData);
       const response = await axios.post(`${API_URL}/event/upload`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-      console.log(response.data);
       setSuccessMessage(true);
       setTimeout(() => {
         onUploadSuccess();
