@@ -50,7 +50,7 @@ export default function EventDashboard() {
     sessionStorage.removeItem("token");
     localStorage.clear();
     sessionStorage.clear();
-    router.push("/login");
+    router.push("/");
   };
 
   const renderContent = () => {
