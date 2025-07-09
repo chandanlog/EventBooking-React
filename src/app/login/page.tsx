@@ -30,7 +30,6 @@ export default function LoginPage() {
 
   const onSubmit = async (data: any) => {
     try {
-      console.log("data", data);
       setLoading(true);
 
       // Send login request to the backend
@@ -83,6 +82,17 @@ export default function LoginPage() {
     localStorage.setItem("email", user.email);
     localStorage.setItem("name", user.displayName);
     localStorage.setItem("googleLogin", "true");
+
+    const userData = {
+      identifier: user.email,
+      providers: user.providerData.map((provider) => provider.providerId),
+      created: new Date(user.metadata.creationTime).toISOString().slice(0, 10),
+      signedIn: new Date(user.metadata.lastSignInTime).toISOString().slice(0, 10),
+      userUID: user.uid,
+      userName: user.displayName,
+      photoURL: user.photoURL,
+    };
+    await axios.post(`${API_URL}/auth/storeUser`, userData);
 
     // ✅ Show success snackbar
     setSnackbarMessage("Google login successful!");
