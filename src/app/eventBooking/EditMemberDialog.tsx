@@ -35,12 +35,12 @@ const EditMemberDialog = ({ open, onClose, memberData, updateMember, error, maxM
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogContent sx={{ background: "#f3f6f9", py: 1 }}>
+      <DialogContent sx={{ background: "#1a1a1a", py: 1 , border: "1px solid white", borderRadius: 2}}>
         <Typography
           variant="h6"
           fontWeight="bold"
           gutterBottom
-          sx={{ color: "#3b0083" }}
+          sx={{ color: "#b388ff" }}
         >
           Edit Member
         </Typography>
@@ -141,13 +141,13 @@ const EditMemberDialog = ({ open, onClose, memberData, updateMember, error, maxM
             />
           </Grid>
         </Grid>
-      </DialogContent>
+      
 
       <DialogActions
         sx={{
-          backgroundColor: "#f3f6f9",
-          px: 3,
-          pb: 2,
+          backgroundColor: "#1a1a1a",
+          marginRight: "-8px",
+          marginLeft: "-8px",
           justifyContent: "space-between",
         }}
       >
@@ -163,6 +163,7 @@ const EditMemberDialog = ({ open, onClose, memberData, updateMember, error, maxM
           Save Changes
         </Button>
       </DialogActions>
+    </DialogContent>
     </Dialog>
   );
 };
