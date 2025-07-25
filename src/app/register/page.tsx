@@ -9,7 +9,7 @@ import Link from "next/link";
 import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+//import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation"; 
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import app from "../lib/firebase-config";

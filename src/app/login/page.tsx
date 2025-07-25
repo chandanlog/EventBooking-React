@@ -9,8 +9,8 @@ import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import MuiAlert from '@mui/material/Alert';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+//import { toast } from 'react-toastify';
+//import 'react-toastify/dist/ReactToastify.css';
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import app from "../lib/firebase-config";
 
