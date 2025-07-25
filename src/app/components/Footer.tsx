@@ -7,7 +7,7 @@ const Footer = () => {
     <Box sx={{ bgcolor: "#0c0c0c", color: "#fff", py: 4 }}>
       <Container maxWidth="lg" sx={{ textAlign: "center" }}>
         {/* Footer Links */}
-        <Box sx={{ display: "flex", justifyContent: "center", gap: 3, mb: 2 }}>
+        {/* <Box sx={{ display: "flex", justifyContent: "center", gap: 3, mb: 2 }}>
           <Link href="/" sx={footerLinkStyle}>
             Home
           </Link>
@@ -20,7 +20,7 @@ const Footer = () => {
           <Link href="/privacy" sx={footerLinkStyle}>
             Privacy Policy
           </Link>
-        </Box>
+        </Box> */}
 
         {/* Copyright */}
         <Typography variant="body2">

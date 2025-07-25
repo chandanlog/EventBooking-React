@@ -10,6 +10,7 @@ import {
   Divider,
   useMediaQuery,
   useTheme,
+  colors,
 } from "@mui/material";
 
 interface Member {
@@ -211,7 +212,7 @@ Mobile     : ${m.mobile}`
   };  
   
   return (
-    <Box sx={{ background: "#f4f4f4", minHeight: "100vh", py: 4, px: 2 }}>
+    <Box sx={{ background: "", minHeight: "100vh", py: 4, px: 2 }}>
      {eventList.length === 0 && (
       <Box
         sx={{
@@ -239,9 +240,9 @@ Mobile     : ${m.mobile}`
       <Box
         sx={{
           borderRadius: "20px",
-          background: "linear-gradient(135deg, #ede7f6 0%, #fff 100%)",
+          background: "linear-gradient(135deg, #2a2430 0%, #2a2430 100%)",
           boxShadow: 6,
-          border: "2px dashed #7b1fa2",
+          border: "1px solid white",
           display: "flex",
           flexDirection: { xs: "column", md: "row" },
           overflow: "hidden",
@@ -285,7 +286,7 @@ Mobile     : ${m.mobile}`
         ) : (
           <>
            <Box sx={{ flex: 3, p: 4 }}>
-  <Typography variant="h5" fontWeight={700} color="#4a148c">
+  <Typography variant="h5" fontWeight={700} color="primary.main">
     {event.eventName}
   </Typography>
   <Typography variant="body1" mt={1}>
@@ -296,19 +297,19 @@ Mobile     : ${m.mobile}`
   🎟 Ticket No: {event.ticketNo}
   </Typography>
   <Divider sx={{ my: 2 }} />
-  <Typography fontWeight={600} mb={1} color="#4a148c">
+  <Typography fontWeight={600} mb={1} color="primary.main">
     Members:
   </Typography>
   
   <Box sx={{ overflowX: "auto", maxWidth: "100%" }}>
     <table style={{ width: "100%", borderCollapse: "collapse" }}>
       <thead>
-        <tr style={{ backgroundColor: "#ce93d8", color: "white" }}>
-          <th style={{ padding: "5px", textAlign: "left" }}>Name</th>
-          <th style={{ padding: "5px", textAlign: "left" }}>Gender</th>
-          <th style={{ padding: "5px", textAlign: "left" }}>Age</th>
-          <th style={{ padding: "5px", textAlign: "left" }}>Id Type</th>
-          <th style={{ padding: "5px", textAlign: "left" }}>Id No</th>
+        <tr style={{ backgroundColor: "#1a1a1a" }}>
+          <th style={{ padding: "5px", textAlign: "left", color:"#bb86fc", fontWeight: "100" }}>Name</th>
+          <th style={{ padding: "5px", textAlign: "left", color:"#bb86fc", fontWeight: "100" }}>Gender</th>
+          <th style={{ padding: "5px", textAlign: "left", color:"#bb86fc", fontWeight: "100" }}>Age</th>
+          <th style={{ padding: "5px", textAlign: "left", color:"#bb86fc", fontWeight: "100" }}>Id Type</th>
+          <th style={{ padding: "5px", textAlign: "left", color:"#bb86fc", fontWeight: "100" }}>Id No</th>
         </tr>
       </thead>
       <tbody>
@@ -316,7 +317,7 @@ Mobile     : ${m.mobile}`
           <tr
             key={member.idNumber}
             style={{
-              backgroundColor: index % 2 === 0 ? "#f3e5f5" : "#ffffff",
+              backgroundColor: index % 2 === 0 ? "#bb86fc" : "#bb86fc",
             }}
           >
             <td style={{ padding: "5px" }}>{member.name}</td>
@@ -335,7 +336,7 @@ Mobile     : ${m.mobile}`
               sx={{
                 flex: 1,
                 p: 2,
-                backgroundColor: "#4a148c",
+                backgroundColor: "primary.main",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -363,7 +364,7 @@ Mobile     : ${m.mobile}`
       <Box textAlign="center" mt={2}>
         <Button
           variant="contained"
-          sx={{ backgroundColor: "#6a1b9a", px: 4, py: 1, borderRadius: 3 }}
+          sx={{ color:'white', px: 4, py: 1, borderRadius: 3 }}
           onClick={() => generatePDF(event)}
           disabled={Boolean(event.message)}
         >

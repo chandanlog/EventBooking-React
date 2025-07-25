@@ -143,15 +143,20 @@ Mobile   : ${m.mobile}`
           <Step key={label}>
             <StepLabel
               sx={{
-                "& .MuiStepLabel-label": { color: "#9e9e9e", mb: 2 },
-                "& .MuiStepLabel-label.Mui-active": {
-                  color: "#3b0083",
-                  fontWeight: "bold",
-                },
-                "& .MuiStepLabel-label.Mui-completed": {
-                  color: "#3b0083",
-                },
-              }}
+                  "& .MuiStepLabel-label": {
+                    color: "primary.main", // default color
+                    mb: 2,
+                  },
+                  "& .MuiStepLabel-label.Mui-active": {
+                    color: "primary.main",
+                    fontWeight: "bold",
+                    mb: 2,
+                  },
+                  "& .MuiStepLabel-label.Mui-completed": {
+                    color: "primary.main",
+                    mb: 2,
+                  },
+                }}
             >
               {label}
             </StepLabel>
@@ -168,8 +173,8 @@ Mobile   : ${m.mobile}`
                 borderRadius: 4,
                 boxShadow: 6,
                 p: 4,
-                background: "#ffffff",
-                border: "3px dashed #ab47bc",
+                bgcolor: "#1a1a1a", color: "white",
+                border: "1px solid white",
               }}
             >
               <Typography
@@ -177,7 +182,7 @@ Mobile   : ${m.mobile}`
                 sx={{
                   fontWeight: 700,
                   textAlign: "center",
-                  color: "#6a1b9a",
+                  color: "primary.main",
                   mb: 3,
                   textTransform: "uppercase",
                 }}
@@ -186,23 +191,23 @@ Mobile   : ${m.mobile}`
               </Typography>
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
-                  <Typography variant="body1" sx={{ color: "#4a148c" }}>
+                  <Typography variant="body1" sx={{ color: "white" }}>
                     <strong>Date:</strong> {eventData.date}
                   </Typography>
-                  <Typography variant="body1" sx={{ color: "#4a148c" }}>
+                  <Typography variant="body1" sx={{ color: "white" }}>
                     <strong>Location:</strong> {eventData.location}
                   </Typography>
                   {eventData.userType === "organization" && (
-                  <Typography variant="body1" sx={{ color: "#4a148c" }}>
+                  <Typography variant="body1" sx={{ color: "white" }}>
                     <strong>Organization Name:</strong> {eventData.organizationName}
                   </Typography>
                 )}
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                  <Typography variant="body1" sx={{ color: "#4a148c" }}>
+                  <Typography variant="body1" sx={{ color: "white" }}>
                     <strong>Booking Type:</strong> {userType}
                   </Typography>
-                  <Typography variant="body1" sx={{ color: "#4a148c" }}>
+                  <Typography variant="body1" sx={{ color: "white" }}>
                     <strong>Seats Booked:</strong> {seatsBooked}
                   </Typography>
                   {qrCode && (
@@ -217,21 +222,21 @@ Mobile   : ${m.mobile}`
                 <Box mt={4}>
                   <Typography
                     variant="subtitle1"
-                    sx={{ color: "#6a1b9a", fontWeight: 600, mb: 2 }}
+                    sx={{ color: "primary.main", fontWeight: 600, mb: 2 }}
                   >
                     👥 Member Details
                   </Typography>
                   <TableContainer component={Paper} elevation={2}>
                     <Table size="small">
                       <TableHead>
-                        <TableRow sx={{ backgroundColor: "#f3e5f5" }}>
-                          <TableCell sx={{ fontSize: "0.75rem" }}>#</TableCell>
-                          <TableCell sx={{ fontSize: "0.75rem" }}>Name</TableCell>
-                          <TableCell sx={{ fontSize: "0.75rem" }}>Gender</TableCell>
-                          <TableCell sx={{ fontSize: "0.75rem" }}>DOB</TableCell>
-                          <TableCell sx={{ fontSize: "0.75rem" }}>ID Type</TableCell>
-                          <TableCell sx={{ fontSize: "0.75rem" }}>ID No.</TableCell>
-                          <TableCell sx={{ fontSize: "0.75rem" }}>Mobile</TableCell>
+                        <TableRow sx={{ bgcolor: "#1a1a1a"}}>
+                          <TableCell sx={{ color:"primary.main" }}>#</TableCell>
+                          <TableCell sx={{ color:"primary.main" }}>Name</TableCell>
+                          <TableCell sx={{ color:"primary.main" }}>Gender</TableCell>
+                          <TableCell sx={{ color:"primary.main" }}>DOB</TableCell>
+                          <TableCell sx={{ color:"primary.main" }}>ID Type</TableCell>
+                          <TableCell sx={{ color:"primary.main" }}>ID No.</TableCell>
+                          <TableCell sx={{ color:"primary.main" }}>Mobile</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -252,7 +257,7 @@ Mobile   : ${m.mobile}`
                 </Box>
               )}
 
-              <Typography variant="body2" sx={{ mt: 3, fontStyle: "italic", color: "#6a1b9a" }}>
+              <Typography variant="body2" sx={{ mt: 3, fontStyle: "italic", color: "primary.main" }}>
                 "A grand event showcasing technological innovation and leadership from all EventHub."
               </Typography>
             </Card>
@@ -268,9 +273,9 @@ Mobile   : ${m.mobile}`
         py: 5,
         borderRadius: 5,
         backdropFilter: "blur(10px)",
-        background: "rgba(255, 255, 255, 0.8)",
+        bgcolor: "#1a1a1a", color: "white",
         boxShadow: "0 8px 30px rgba(0, 0, 0, 0.1)",
-        border: "1px solid rgba(255, 255, 255, 0.3)",
+        border: "1px solid white",
         position: "relative",
         overflow: "hidden",
       }}
@@ -282,7 +287,7 @@ Mobile   : ${m.mobile}`
         sx={{
           fontWeight: 700,
           mb: 2,
-          color: "#6a1b9a",
+          color: "primary.main",
         }}
       >
         🎉 Ready to Go!
@@ -291,7 +296,7 @@ Mobile   : ${m.mobile}`
       <Typography
         variant="body1"
         align="center"
-        sx={{ color: "#4a148c", mb: 3 }}
+        sx={{ color: "white", mb: 3 }}
       >
         Double-check your details. If everything looks good, hit submit!
       </Typography>
@@ -301,11 +306,11 @@ Mobile   : ${m.mobile}`
           <Checkbox
             checked={acceptedTerms}
             onChange={handleCheckboxChange}
-            sx={{ color: "#6a1b9a" }}
+            sx={{ color: "white" }}
           />
         }
         label={
-          <Typography variant="body2" sx={{ color: "#6a1b9a" }}>
+          <Typography variant="body2" sx={{ color: "white" }}>
             I agree to the terms & conditions
           </Typography>
         }
@@ -332,14 +337,14 @@ Mobile   : ${m.mobile}`
           },
         }}
       >
-        ✅ Submit Booking
+         Submit Booking
       </Button>
       {successMessage && (
       <Box textAlign="center" sx={{ mt: 4 }}>
-        <Typography variant="h6" sx={{ color: "#2e7d32", fontWeight: 600 }}>
-          ✅ Booking Submitted Successfully!
+        <Typography variant="h6" sx={{ color: "primary.main", fontWeight: 600 }}>
+           Booking Submitted Successfully!
         </Typography>
-        <Typography variant="body2" sx={{ color: "#4caf50" }}>
+        <Typography variant="body2" sx={{ color: "primary.main" }}>
           Redirecting to confirmation page...
         </Typography>
       </Box>

@@ -117,12 +117,12 @@ export default function AddMemberModal({
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogContent sx={{ background: "#f3f6f9", py: 1 }}>
+      <DialogContent sx={{ background: "#1a1a1a", py: 1 , border: "1px solid white", borderRadius: 2}}>
         <Typography
           variant="h6"
           fontWeight="bold"
           gutterBottom
-          sx={{ color: "#3b0083" }}
+          sx={{ color: "#b388ff"}}
         >
           Add Member
         </Typography>
@@ -223,14 +223,13 @@ export default function AddMemberModal({
             />
           </Grid>
         </Grid>
-      </DialogContent>
-
+     
       <DialogActions
         sx={{
-          backgroundColor: "#f3f6f9",
-          px: 3,
-          pb: 2,
+          backgroundColor: "#1a1a1a",
           justifyContent: "space-between",
+          marginRight: "-8px",
+          marginLeft: "-8px",
         }}
       >
         <Button onClick={onClose} variant="outlined" color="secondary">
@@ -245,6 +244,7 @@ export default function AddMemberModal({
           Add Member
         </Button>
       </DialogActions>
+      </DialogContent>
     </Dialog>
   );
 }

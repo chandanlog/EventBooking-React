@@ -24,26 +24,77 @@ import {
   Paper,
   Stepper,
   Step,
-  StepLabel,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
+  StepLabel
 } from "@mui/material";
 import axios from "axios";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import AddMemberModal from "./AddMemberModal";
 import { Snackbar, Alert } from '@mui/material';
-import Link from "next/link";
-import { useRouter } from 'next/router';
 import EditMemberDialog from "./EditMemberDialog";
-
 
 const theme = createTheme({
   palette: {
+    mode: "dark",
     primary: {
-      main: "#3b0083",
+      main: "#b388ff",
+    },
+    secondary: {
+      main: "#ff4081",
+    },
+    background: {
+      default: "#0d0d0d",
+      paper: "#c",
+    },
+    text: {
+      primary: "#ffffff",
+      secondary: "#b0b0b0",
+    },
+  },
+  typography: {
+    fontFamily: '"Poppins", "Roboto", "Helvetica", "Arial", sans-serif',
+    fontWeightBold: 600,
+    h6: {
+      fontWeight: 600,
+    },
+  },
+  components: {
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          borderRadius: 16,
+          backgroundColor: "#1a1a1a",
+          boxShadow: "0 0 20px rgba(179, 136, 255, 0.3)",
+        },
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "#1a1a1a",
+        },
+      },
+    },
+    MuiTableCell: {
+      styleOverrides: {
+        root: {
+          color: "#ffffff",
+        },
+        head: {
+          backgroundColor: "#2a2a2a",
+        },
+      },
+    },
+    MuiAlert: {
+      styleOverrides: {
+        standardSuccess: {
+          backgroundColor: "#b388ff", // purple
+          color: "#ffffff",           // white text
+          "& .MuiAlert-icon": {
+            color: "#ffffff",         // white icon
+          },
+        },
+      },
     },
   },
 });
@@ -279,16 +330,16 @@ const handleSubmitAllMembers = async () => {
               <StepLabel
                 sx={{
                   "& .MuiStepLabel-label": {
-                    color: "#9e9e9e", // default color
+                    color: "primary.main", // default color
                     mb:2,
                   },
                   "& .MuiStepLabel-label.Mui-active": {
-                    color: "#3b0083",
+                    color: "primary.main",
                     fontWeight: "bold",
                     mb:2,
                   },
                   "& .MuiStepLabel-label.Mui-completed": {
-                    color: "#3b0083",
+                    color: "primary.main",
                     mb:2,
                   },
                 }}
@@ -298,8 +349,7 @@ const handleSubmitAllMembers = async () => {
             </Step>
           ))}
         </Stepper>
-
-      <Box sx={{ px: 2, pb: 4, display: "flex", justifyContent: "center", bgcolor: "#f7f4fc" }}>
+      <Box sx={{ px: 2, pb: 4, display: "flex", justifyContent: "center" }}>
         <Card
           sx={{
             width: "100%",
@@ -307,7 +357,8 @@ const handleSubmitAllMembers = async () => {
             borderRadius: 5,
             boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
             p: 4,
-            backgroundColor: "#fff",
+            bgcolor: "background.paper", color: "white",
+            border: "1px solid white",
           }}
         >
           <CardContent>
@@ -580,6 +631,7 @@ const handleSubmitAllMembers = async () => {
                     type="submit"
                     variant="contained"
                     size="large"
+                    sx={{color:'white'}}
                   >
                     Next
                   </Button>
@@ -589,6 +641,7 @@ const handleSubmitAllMembers = async () => {
                     size="large"
                     onClick={handleOpenModal}
                     disabled={members.length >= formData.numSeats}
+                    sx={{color:'white'}}
                   >
                     Add Member ({members.length}/{formData.numSeats})
                   </Button>
@@ -600,7 +653,7 @@ const handleSubmitAllMembers = async () => {
                 onClose={() => setOpenSnackbar(false)}
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
               >
-                <Alert onClose={() => setOpenSnackbar(false)}  severity={snackbarColor} variant="filled" sx={{ width: "100%" }}>
+                <Alert onClose={() => setOpenSnackbar(false)}  severity={snackbarColor}  variant="standard" sx={{ width: "100%" }}>
                   {snackbarMessage}
                 </Alert>
               </Snackbar>
@@ -621,7 +674,8 @@ const handleSubmitAllMembers = async () => {
         mt: 4,
         borderRadius: 3,
         boxShadow: 3,
-        backgroundColor: "#fff",
+        backgroundColor: "background.paper",
+        border: "1px solid white",
       }}
     >
       <CardContent>
@@ -629,7 +683,7 @@ const handleSubmitAllMembers = async () => {
           variant="h6"
           fontWeight="bold"
           gutterBottom
-          sx={{ color: "#3b0083" }}
+          sx={{ color: "primary.main" }}
         >
           Member Details
         </Typography>
@@ -637,15 +691,15 @@ const handleSubmitAllMembers = async () => {
 
         <TableContainer component={Paper} elevation={0}>
           <Table size="small" aria-label="member details table">
-            <TableHead>
-              <TableRow sx={{ backgroundColor: "#e3f2fd" }}>
-                <TableCell><strong>Name</strong></TableCell>
-                <TableCell><strong>Gender</strong></TableCell>
-                <TableCell><strong>ID Type</strong></TableCell>
-                <TableCell><strong>ID Number</strong></TableCell>
-                <TableCell><strong>Mobile</strong></TableCell>
-                <TableCell><strong>DOB</strong></TableCell>
-                <TableCell align="center"><strong>Actions</strong></TableCell>
+            <TableHead sx={{color: "primary.main"}}>
+              <TableRow sx={{ bgcolor:"background.paper" }}>
+                <TableCell sx={{color: "primary.main"}}><strong>Name</strong></TableCell>
+                <TableCell sx={{color: "primary.main"}}><strong>Gender</strong></TableCell>
+                <TableCell sx={{color: "primary.main"}}><strong>ID Type</strong></TableCell>
+                <TableCell sx={{color: "primary.main"}}><strong>ID Number</strong></TableCell>
+                <TableCell sx={{color: "primary.main"}}><strong>Mobile</strong></TableCell>
+                <TableCell sx={{color: "primary.main"}}><strong>DOB</strong></TableCell>
+                <TableCell align="center" sx={{color: "primary.main"}}><strong>Actions</strong></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -708,7 +762,7 @@ const handleSubmitAllMembers = async () => {
               variant="contained"
               color="primary"
               size="large"
-              sx={{ borderRadius: 2 }}
+              sx={{ borderRadius: 2, color: 'white' }}
               onClick={handleSubmitAllMembers}
             >
               Submit All Members
@@ -718,7 +772,7 @@ const handleSubmitAllMembers = async () => {
               variant="contained"
               color="primary"
               size="large"
-              sx={{ borderRadius: 2 }}
+              sx={{ borderRadius: 2, color: 'white' }}
             >
               Next
             </Button>
