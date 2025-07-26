@@ -1046,22 +1046,20 @@ const App: React.FC = () => {
       <List>
         {menuItems.map(({ text, icon }) => {
           // Re-added isDisabled logic
-          const isDisabled =
-            (!eventSubmitted &&
-              text !== "Event Details" &&
-              text !== "Dashboard") || // Step 1: Before submission, only Event Details and Dashboard are enabled
-            (eventSubmitted &&
-              !documentUploaded &&
-              text === "Review & Submit") || // Step 2: After event submitted, disable Review until document is uploaded
-            (eventSubmitted &&
-              !documentUploaded &&
-              text !== "Event Details" &&
-              text !== "Dashboard" &&
-              text !== "Upload Document") || // Step 3: Block all tabs except Event Details, Dashboard and Upload Doc
-            (!eventSubmitted && text === "Upload Document") || // Disable Upload Document if Event Details not submitted
-            (!eventSubmitted && text === "Review & Submit") || // Disable Review & Submit if Event Details not submitted
-            (!eventSubmitted && text === "View Booking"); // Disable View Booking if Event Details not submitted
-
+const isDisabled =
+  (!eventSubmitted &&
+    text !== "Event Details" &&
+    text !== "Dashboard" &&
+    text !== "View Booking") || // Step 1: Before submission, only Event Details, Dashboard, and View Booking are enabled
+  (eventSubmitted &&
+    !documentUploaded &&
+    text === "Review & Submit") || // Step 2: After event submitted, disable Review until document is uploaded
+  (eventSubmitted &&
+    !documentUploaded &&
+    text !== "Event Details" &&
+    text !== "Dashboard" &&
+    text !== "Upload Document" &&
+    text !== "View Booking"); // Step 3: Block all tabs except Event Details, Dashboard, Upload Doc, and View Booking
 
           return (
             <ListItem key={text} disablePadding>
@@ -1180,20 +1178,19 @@ const App: React.FC = () => {
               >
                 {menuItems.map((item) => {
                   const isDisabled =
-                    (!eventSubmitted &&
-                      item.text !== "Event Details" &&
-                      item.text !== "Dashboard") ||
-                    (eventSubmitted &&
-                      !documentUploaded &&
-                      item.text === "Review & Submit") ||
-                    (eventSubmitted &&
-                      !documentUploaded &&
-                      item.text !== "Event Details" &&
-                      item.text !== "Dashboard" &&
-                      item.text !== "Upload Document") ||
-                    (!eventSubmitted && item.text === "Upload Document") ||
-                    (!eventSubmitted && item.text === "Review & Submit") ||
-                    (!eventSubmitted && item.text === "View Booking");
+  (!eventSubmitted &&
+    item.text !== "Event Details" &&
+     item.text !== "Dashboard" &&
+     item.text !== "View Booking") || // Step 1: Before submission, only Event Details, Dashboard, and View Booking are enabled
+  (eventSubmitted &&
+    !documentUploaded &&
+     item.text === "Review & Submit") || // Step 2: After event submitted, disable Review until document is uploaded
+  (eventSubmitted &&
+    !documentUploaded &&
+      item.text !== "Event Details" &&
+     item.text !== "Dashboard" &&
+     item.text !== "Upload Document" &&
+     item.text !== "View Booking"); // Step 3: Block all tabs except Event Details, Dashboard, Upload Doc, and View Booking
                   return (
                     <Button
                       key={item.text}
