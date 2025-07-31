@@ -34,7 +34,7 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx"
-, "src/app/__tests__/register.test.js", "ssrc/app/__tests__/home.test.js  ],
+, "src/app/__tests__/home.test.js"  ],
   "exclude": [
     "node_modules"
   ]
