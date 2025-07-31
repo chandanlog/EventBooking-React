@@ -1,7 +1,5 @@
-// app/layout.tsx
-
 "use client";
-
+import React from 'react';
 import { useState, useEffect } from "react";
 import { CssBaseline } from "@mui/material";
 import Header from "./components/Header"; // Adjust import path as necessary
