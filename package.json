@@ -223,7 +223,7 @@
     "mz": "^2.7.0",
     "nanoid": "^3.3.8",
     "natural-compare": "^1.4.0",
-    "next": "^15.1.7",
+    "next": "15.1.11",
     "next-auth": "^4.24.11",
     "normalize-path": "^3.0.0",
     "oauth": "^0.9.15",
